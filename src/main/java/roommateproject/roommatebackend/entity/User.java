@@ -2,6 +2,7 @@ package roommateproject.roommatebackend.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import roommateproject.roommatebackend.dto.UserAddForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,14 +21,22 @@ public class User {
     private String loginId;
     private String name;
     private String password;
-    private String nick_name;
+    private String nickName;
 
     public User(){}
 
-    public User(String loginId, String name, String password, String nick_name){
+    public User(String loginId, String name, String password, String nickName){
         this.loginId = loginId;
         this.name = name;
         this.password = password;
-        this.nick_name = nick_name;
+        this.nickName = nickName;
     }
+
+    public User(String requestEmail, UserAddForm userAddForm) {
+        this.loginId = requestEmail;
+        this.name = userAddForm.getName();
+        this.nickName = userAddForm.getNickName();
+        this.password = userAddForm.getPassword();
+    }
+
 }
