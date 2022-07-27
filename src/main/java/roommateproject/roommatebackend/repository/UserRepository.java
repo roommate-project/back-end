@@ -18,12 +18,8 @@ public class UserRepository {
         return user;
     }
 
-    public User findOne(Long id){
-        return em.find(User.class,id);
-    }
-
     public Optional<User> findByEmail(String requestEmail) {
-        return em.createQuery("select u from User u where u.loginId=:id",User.class)
+        return em.createQuery("select u from User u where u.email=:id",User.class)
                 .setParameter("id",requestEmail)
                 .getResultList()
                 .stream().findAny();

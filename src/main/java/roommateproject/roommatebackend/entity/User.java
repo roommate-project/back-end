@@ -18,22 +18,22 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    private String loginId;
+    private String email;
     private String name;
     private String password;
     private String nickName;
 
     public User(){}
 
-    public User(String loginId, String name, String password, String nickName){
-        this.loginId = loginId;
+    public User(String email, String name, String password, String nickName){
+        this.email = email;
         this.name = name;
         this.password = password;
         this.nickName = nickName;
     }
 
     public User(String requestEmail, UserAddForm userAddForm) {
-        this.loginId = requestEmail;
+        this.email = requestEmail;
         this.name = userAddForm.getName();
         this.nickName = userAddForm.getNickName();
         this.password = userAddForm.getPassword();

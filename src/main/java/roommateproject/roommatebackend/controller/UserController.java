@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @AllArgsConstructor @Slf4j
@@ -24,8 +25,9 @@ public class UserController {
 
     private final UserService userService;
     private final SendMailService mailSender;
-    private static final Map<String, String> emailCheck = new HashMap<>();
-    private static final Map<String, Date> checkTime = new HashMap<>();
+    private static final Map<String, String> emailCheck = new ConcurrentHashMap<>();
+    private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
+    private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
 
     @GetMapping("/api/user/email/validate")
     public ResponseMessage emailValidate(@RequestParam(value = "email") @Email String requestEmail){
@@ -57,6 +59,7 @@ public class UserController {
             return new ResponseMessage(new EmailValidateDto(false,"이메일 인증 실패 : 3분이내 입력", HttpStatus.UNAUTHORIZED));
         }
         if(emailCheck.get(requestEmail).equals(getCode)){
+            emailCodeComplete.put(requestEmail, true);
             return new ResponseMessage(new EmailValidateDto(true,"이메일 인증 성공",HttpStatus.OK));
         }
         return new ResponseMessage(new EmailValidateDto(false,"이메일 인증 실패 : 인증코드 불일치",HttpStatus.BAD_REQUEST));
@@ -65,6 +68,12 @@ public class UserController {
     @PostMapping("/api/user/add")
     public ResponseMessage addUser(@RequestParam(value = "email") @Email String requestEmail,
                                    @RequestBody @Valid UserAddForm userAddForm){
+
+ /*       if(emailCodeComplete.get(requestEmail) == null){
+            return new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), false, "이메일 검정 먼저 하세요",new Date());
+        }
+
+  */       //나중엔 주석 해제할것
         User user = new User(requestEmail,userAddForm);
         EmailValidateDto emailValidateDto= userService.validateEmail(requestEmail);
         if(emailValidateDto.isValidate()) {

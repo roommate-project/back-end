@@ -20,6 +20,18 @@ public class ResponseMessage {
     public ResponseMessage(){
     }
 
+    @Override
+    public String toString() {
+        return message;
+    }
+
+    public ResponseMessage(int code, boolean status, String message, Date timestamp){
+        this.code = code;
+        this.status = status;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
     public ResponseMessage(EmailValidateDto emailValidateDto){
         this.code = emailValidateDto.getCode();
         this.status = emailValidateDto.isValidate();
@@ -38,7 +50,7 @@ public class ResponseMessage {
     public ResponseMessage(MethodArgumentNotValidException e) {
         this.code = HttpStatus.BAD_REQUEST.value();
         this.status = false;
-        this.message = "유효성 검사 실패 : " +  e.getBindingResult().getAllErrors();
+        this.message = "유효성 검사 실패 : " +  e.getBindingResult().getAllErrors().get(0);
         this.timestamp = new Date();
     }
 
@@ -46,6 +58,13 @@ public class ResponseMessage {
         this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
         this.status = false;
         this.message = "비밀번호 저장 실패 : " + e.getMessage();
+        this.timestamp = new Date();
+    }
+
+    public ResponseMessage(IllegalArgumentException e) {
+        this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        this.status = false;
+        this.message = "에러 : " + e.getMessage();
         this.timestamp = new Date();
     }
 }
