@@ -38,7 +38,7 @@ public class SendMailService {
         session.setDebug(true);
         try {
             Random random = new Random();
-            int randomNumber = random.nextInt(10000);
+            int randomNumber = random.nextInt(2000000000) % 1000000;
             Message mimeMessage = new MimeMessage(session);
             mimeMessage.setFrom(new InternetAddress(sendFrom));
             mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(sendTo));

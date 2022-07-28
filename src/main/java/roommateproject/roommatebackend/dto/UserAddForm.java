@@ -16,8 +16,8 @@ public class UserAddForm {
     @NotBlank
     private String nickName;
 //    @NotBlank
-//    private MultipartFile representImage;
-//    @Nullable
-//    private List<MultipartFile> images;
+  //  private MultipartFile representImage;
+ //   @Nullable
+   // private List<MultipartFile> images;
 
 }
