@@ -57,4 +57,5 @@ public class UserService {
         }
         return new EmailValidateDto(true, "정상 처리", HttpStatus.OK);
     }
+
 }

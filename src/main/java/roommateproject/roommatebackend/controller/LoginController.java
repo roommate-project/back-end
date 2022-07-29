@@ -1,34 +1,29 @@
 package roommateproject.roommatebackend.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.response.ResponseMessage;
+import roommateproject.roommatebackend.service.KakaoOauthService;
 import roommateproject.roommatebackend.service.LoginService;
 import roommateproject.roommatebackend.token.JwtTokenProvider;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Map;
 
 @RestController @Slf4j
+@AllArgsConstructor
 public class LoginController {
 
     private final LoginService loginService;
     private final JwtTokenProvider tokenProvider;
-
-    public LoginController(LoginService loginService, JwtTokenProvider tokenProvider) {
-        this.loginService = loginService;
-        this.tokenProvider = tokenProvider;
-    }
-
+    private final KakaoOauthService kakaoOauthService;
     @PostMapping("/api/login")
-    public String login(@RequestBody Map<String, String> request){
+    public ResponseMessage login(@RequestBody Map<String, String> request){
 
         String requestEmail = request.get("email");
         String requestPassword = request.get("password");
@@ -36,27 +31,27 @@ public class LoginController {
         try{
             check = loginService.login(requestEmail,requestPassword);
         }catch (NoSuchAlgorithmException e){
-            ResponseMessage responseMessage = new ResponseMessage(e);
-            return responseMessage.toString();
+            return new ResponseMessage(e);
         }catch (IllegalArgumentException e){
-            ResponseMessage responseMessage = new ResponseMessage(e);
-            return responseMessage.toString();
+            return new ResponseMessage(e);
         }
         if(check){
-            return tokenProvider.createToken(requestEmail);
+            return new ResponseMessage(tokenProvider.createToken(requestEmail));
         }
-        ResponseMessage responseMessage = new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "로그인 불가", new Date());
-        return responseMessage.toString();
+        return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "로그인 불가", new Date());
     }
 
-    @GetMapping("/api/login")
-    public String a(HttpServletRequest request){
-        Enumeration<String> paramKeys = request.getHeaderNames();
-        while (paramKeys.hasMoreElements()) {
-            String key = paramKeys.nextElement();
-            log.info("{} -> {}",key,request.getHeader(key));
+    @GetMapping("/api/login/oauth/kakao")
+    public ResponseMessage kakaoAddUser(@RequestParam String code){
+        //https://kauth.kakao.com/oauth/authorize?client_id=26fc82315434c1ec0e23b5a0aa5076e5&redirect_uri=http://localhost:8080/api/login/oauth/kakao&response_type=code
+        log.info("kakao return code : {}",code);
+        String kakaoEmail = kakaoOauthService.findKakaoEmail(kakaoOauthService.getKakaoAccessToken(code,"http://localhost:8080/api/login/oauth/kakao"));
+
+        if(kakaoEmail == null){
+            return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
         }
- //       req.forEach((key, value) -> log.info("{} : {}",key,value));
-        return "A";
+        loginService.kakaoLogin(kakaoEmail);
+        log.info("token");
+        return new ResponseMessage(tokenProvider.createToken(kakaoEmail));
     }
 }

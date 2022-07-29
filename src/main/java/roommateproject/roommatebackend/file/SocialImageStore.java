@@ -8,27 +8,35 @@ import roommateproject.roommatebackend.entity.UserImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component
-public class RepresentImageStore {
+public class SocialImageStore {
 
     @Value("${spring.image.represent}")
     private String fileDir;
 
     public String getFullPath(String filename){
-        return fileDir + filename;
+        String[] fileSplit = filename.split(".Kakao");
+        return fileDir + fileSplit[0] + ".jpg";
     }
 
-    public UserImage storeFile(User user, MultipartFile multipartFile) throws IOException {
-        if(multipartFile.isEmpty()){
-            return null;
-        }
-
-        String originalFileName = multipartFile.getOriginalFilename();
+    public UserImage storeFile(User user, String downloadURL) throws IOException {
+        String originalFileName = "Kakao Download Profile";
         String uuid = UUID.randomUUID().toString();
         String storeFileName = createStoreFileName(originalFileName, uuid);
-        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+        String OUTPUT_FILE_PATH = getFullPath(storeFileName);
+
+        try(InputStream in = new URL(downloadURL).openStream()){
+            Path imagePath = Paths.get(OUTPUT_FILE_PATH);
+            Files.copy(in, imagePath);
+        }
+
 
         return new UserImage(user, true, originalFileName, storeFileName);
     }

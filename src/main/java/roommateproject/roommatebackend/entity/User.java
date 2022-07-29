@@ -22,14 +22,18 @@ public class User {
     private String name;
     private String password;
     private String nickName;
+    private String gender;
+    private String register;
 
     public User(){}
 
-    public User(String email, String name, String password, String nickName){
+    public User(String email, String name, String password, String nickName, String gender, String register){
         this.email = email;
         this.name = name;
         this.password = password;
         this.nickName = nickName;
+        this.gender = gender;
+        this.register = register;
     }
 
     public User(String requestEmail, UserAddForm userAddForm) {
@@ -37,6 +41,8 @@ public class User {
         this.name = userAddForm.getName();
         this.nickName = userAddForm.getNickName();
         this.password = userAddForm.getPassword();
+        this.gender = userAddForm.getGender();
+        this.register = userAddForm.getRegister();
     }
 
 }

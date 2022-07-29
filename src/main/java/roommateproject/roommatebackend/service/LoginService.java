@@ -33,6 +33,9 @@ public class LoginService {
         }
         User findUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
+        if(!findUser.getRegister().equals("email")){
+            throw new IllegalArgumentException("카카오, 네이버로 로그인");
+        }
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.reset();
         md.update(encrypt.getBytes());
@@ -41,6 +44,12 @@ public class LoginService {
         if(!encryptPassword.equals(findUser.getPassword())){
             throw new IllegalArgumentException("비밀번호 불일치");
         }
+        return true;
+    }
+
+    public boolean kakaoLogin(String email){
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
         return true;
     }
 }

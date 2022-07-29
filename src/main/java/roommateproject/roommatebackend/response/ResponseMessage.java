@@ -20,9 +20,11 @@ public class ResponseMessage {
     public ResponseMessage(){
     }
 
-    @Override
-    public String toString() {
-        return message;
+    public ResponseMessage(String token) {
+        this.code = HttpStatus.OK.value();
+        this.status = true;
+        this.message = token;
+        this.timestamp = new Date();
     }
 
     public ResponseMessage(int code, boolean status, String message, Date timestamp){
@@ -62,7 +64,7 @@ public class ResponseMessage {
     }
 
     public ResponseMessage(IllegalArgumentException e) {
-        this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        this.code = HttpStatus.BAD_REQUEST.value();
         this.status = false;
         this.message = "에러 : " + e.getMessage();
         this.timestamp = new Date();

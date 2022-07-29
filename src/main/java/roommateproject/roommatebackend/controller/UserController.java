@@ -12,7 +12,10 @@ import roommateproject.roommatebackend.dto.UserAddForm;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.file.RepresentImageStore;
 import roommateproject.roommatebackend.file.RestImageStore;
+import roommateproject.roommatebackend.file.SocialImageStore;
+import roommateproject.roommatebackend.repository.UserRepository;
 import roommateproject.roommatebackend.response.ResponseMessage;
+import roommateproject.roommatebackend.service.KakaoOauthService;
 import roommateproject.roommatebackend.service.SendMailService;
 import roommateproject.roommatebackend.service.UserImageService;
 import roommateproject.roommatebackend.service.UserService;
@@ -22,10 +25,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -36,8 +36,11 @@ public class UserController {
     private final UserService userService;
     private final SendMailService mailSender;
     private final UserImageService userImageService;
+    private final KakaoOauthService kakaoOauthService;
     private final RepresentImageStore representImageStore;
+    private final UserRepository userRepository;
     private final RestImageStore restImageStore;
+    private final SocialImageStore socialImageStore;
     private static final Map<String, String> emailCheck = new ConcurrentHashMap<>();
     private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
@@ -99,7 +102,7 @@ public class UserController {
         if(!pattern.matcher(userAddForm.getPassword()).matches()){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(),false,"비밀번호는 숫자와 영문자로 구성",new Date());
         }
-
+        userAddForm.setRegister("email");
         User user = new User(requestEmail,userAddForm);
 
         EmailValidateDto emailValidateDto= userService.validateEmail(requestEmail);
@@ -122,4 +125,31 @@ public class UserController {
         }
         return new ResponseMessage(user);
     }
+
+    @GetMapping("/api/user/add/oauth/kakao")
+    public ResponseMessage kakaoAddUser(@RequestParam String code){
+        //https://kauth.kakao.com/oauth/authorize?client_id=26fc82315434c1ec0e23b5a0aa5076e5&redirect_uri=http://localhost:8080/api/user/add/oauth/kakao&response_type=code
+        log.info("kakao return code : {}",code);
+
+        Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://localhost:8080/api/user/add/oauth/kakao"));
+        if(kakaoUser == null){
+            return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
+        }
+        try {
+            User user = (User) kakaoUser.get("user");
+            String path = (String) kakaoUser.get("image");
+            Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+            if(!findUser.isEmpty()){
+                return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
+            }
+            userService.join(user);
+            userImageService.join(socialImageStore.storeFile(user, path));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return new ResponseMessage(HttpStatus.OK.value(), true, "카카오 회원가입 완료", new Date());
+    }
+
 }
