@@ -4,9 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import roommateproject.roommatebackend.entity.User;
-import roommateproject.roommatebackend.file.SocialImageStore;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -15,11 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Transactional(readOnly = true)
 public class KakaoOauthService {
 
     @Value("${spring.password.kakao}")
     private String password;
+    @Value(("${spring.kakao.client}"))
+    private String client;
 
     public String getKakaoAccessToken(String code, String redirectURL){
         String accessToken = "";
@@ -36,13 +35,13 @@ public class KakaoOauthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=26fc82315434c1ec0e23b5a0aa5076e5");
+            sb.append("&client_id=" + client);
             sb.append("&redirect_uri="+redirectURL);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
 
-//            int responseCode = conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
@@ -52,7 +51,6 @@ public class KakaoOauthService {
                 result += line;
             }
 
-            JsonParser parser = new JsonParser();
             JsonElement element = JsonParser.parseString(result);
 
             accessToken = element.getAsJsonObject().get("access_token").getAsString();

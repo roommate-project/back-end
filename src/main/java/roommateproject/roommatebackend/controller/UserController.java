@@ -15,10 +15,7 @@ import roommateproject.roommatebackend.file.RestImageStore;
 import roommateproject.roommatebackend.file.SocialImageStore;
 import roommateproject.roommatebackend.repository.UserRepository;
 import roommateproject.roommatebackend.response.ResponseMessage;
-import roommateproject.roommatebackend.service.KakaoOauthService;
-import roommateproject.roommatebackend.service.SendMailService;
-import roommateproject.roommatebackend.service.UserImageService;
-import roommateproject.roommatebackend.service.UserService;
+import roommateproject.roommatebackend.service.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -37,6 +34,7 @@ public class UserController {
     private final SendMailService mailSender;
     private final UserImageService userImageService;
     private final KakaoOauthService kakaoOauthService;
+    private final NaverOauthService naverOauthService;
     private final RepresentImageStore representImageStore;
     private final UserRepository userRepository;
     private final RestImageStore restImageStore;
@@ -152,4 +150,29 @@ public class UserController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "카카오 회원가입 완료", new Date());
     }
 
+    @GetMapping("/api/user/add/oauth/naver")
+    public ResponseMessage naverAddUser(@RequestParam String code){
+
+        String token = naverOauthService.getNaverAccessToken(code,"http://localhost:8080/api/user/add/oauth/naver");
+        Map<String, Object> naverUser = naverOauthService.createNaverUser(token);
+        if(naverUser == null){
+            return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
+        }
+        try {
+            User user = (User) naverUser.get("user");
+            String path = (String) naverUser.get("image");
+            Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+            if(!findUser.isEmpty()){
+                return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
+            }
+            userService.join(user);
+            userImageService.join(socialImageStore.storeFile(user, path));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return new ResponseMessage(HttpStatus.OK.value(), true, "네이버 회원가입 완료", new Date());
+    }
 }

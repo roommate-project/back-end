@@ -47,9 +47,13 @@ public class LoginService {
         return true;
     }
 
-    public boolean kakaoLogin(String email){
+    public void kakaoLogin(String email){
         userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
-        return true;
+    }
+
+    public void naverLogin(String email) {
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
     }
 }
