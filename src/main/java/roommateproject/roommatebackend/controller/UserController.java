@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import roommateproject.roommatebackend.dto.EmailValidateDto;
 import roommateproject.roommatebackend.dto.UserAddForm;
 import roommateproject.roommatebackend.entity.User;
+import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.file.RepresentImageStore;
 import roommateproject.roommatebackend.file.RestImageStore;
 import roommateproject.roommatebackend.file.SocialImageStore;
@@ -109,11 +110,8 @@ public class UserController {
                 if(representFile.isEmpty() || representFile == null){
                     return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "대표사진 전송하세요", new Date());
                 }
-                userService.join(user);
-                userImageService.join(representImageStore.storeFile(user, representFile));
-                for (MultipartFile restFile : restFiles) {
-                    userImageService.join(restImageStore.storeFile(user,restFile));
-                }
+                UserImage userImage = representImageStore.storeFile(user,representFile);
+                userService.join(user,userImage);
        //         emailCodeComplete.remove(requestEmail);
             }catch(NoSuchAlgorithmException e){
                 return new ResponseMessage(e);
@@ -127,7 +125,6 @@ public class UserController {
     @GetMapping("/api/user/add/oauth/kakao")
     public ResponseMessage kakaoAddUser(@RequestParam String code){
         //https://kauth.kakao.com/oauth/authorize?client_id=26fc82315434c1ec0e23b5a0aa5076e5&redirect_uri=http://localhost:8080/api/user/add/oauth/kakao&response_type=code
-        log.info("kakao return code : {}",code);
 
         Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://localhost:8080/api/user/add/oauth/kakao"));
         if(kakaoUser == null){
@@ -140,8 +137,8 @@ public class UserController {
             if(!findUser.isEmpty()){
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            userService.join(user);
-            userImageService.join(socialImageStore.storeFile(user, path));
+            UserImage userImage = socialImageStore.storeFile(user, path);
+            userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }catch (IOException e){
@@ -165,8 +162,8 @@ public class UserController {
             if(!findUser.isEmpty()){
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            userService.join(user);
-            userImageService.join(socialImageStore.storeFile(user, path));
+            UserImage userImage = socialImageStore.storeFile(user, path);
+            userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }catch (IOException e){
@@ -174,5 +171,11 @@ public class UserController {
         }
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "네이버 회원가입 완료", new Date());
+    }
+
+    @GetMapping("/api/user/erase/{email}")
+    public ResponseMessage eraseUser(@PathVariable(value = "email")String email){
+        userService.erase(email);
+        return new ResponseMessage(HttpStatus.OK.value(), true, "회원탈퇴 완료", new Date());
     }
 }

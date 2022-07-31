@@ -99,7 +99,7 @@ public class KakaoOauthService {
 
             String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             String name = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
-            String nickName = "별명을 설정하세요";
+            String nickName = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString();
             String profileURL = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("profile_image_url").getAsString();
             String gender = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("gender").getAsString();
             br.close();

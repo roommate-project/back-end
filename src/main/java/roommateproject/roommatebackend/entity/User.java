@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import roommateproject.roommatebackend.dto.UserAddForm;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -24,6 +22,9 @@ public class User {
     private String nickName;
     private String gender;
     private String register;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<UserImage> images;
 
     public User(){}
 

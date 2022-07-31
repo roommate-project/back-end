@@ -73,7 +73,7 @@ public class NaverOauthService {
     }
 
     public Map<String, Object> createNaverUser(String naverToken) {
-        String header = "Bearer " + naverToken; // Bearer 다음에 공백 추가
+        String header = "Bearer " + naverToken;
 
         String apiURL = "https://openapi.naver.com/v1/nid/me";
         Map<String, Object> naverUser = new HashMap<>();
@@ -103,7 +103,7 @@ public class NaverOauthService {
 
     public String findNaverEmail(String naverToken){
 
-        String header = "Bearer " + naverToken; // Bearer 다음에 공백 추가
+        String header = "Bearer " + naverToken;
 
         String apiURL = "https://openapi.naver.com/v1/nid/me";
         Map<String, Object> naverUser = new HashMap<>();

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roommateproject.roommatebackend.dto.EmailValidateDto;
 import roommateproject.roommatebackend.entity.User;
+import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.repository.UserRepository;
 
 import java.math.BigInteger;
@@ -30,13 +31,13 @@ public class UserService {
     }
 
     @Transactional
-    public long join(User user) throws NoSuchAlgorithmException {
+    public long join(User user, UserImage userImage) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.reset();
         md.update(encrypt.getBytes());
         byte[] digested = md.digest(user.getPassword().getBytes());
         user.setPassword(String.format("%064x",new BigInteger(1,digested)));
-        User saveUser = userRepository.save(user);
+        User saveUser = userRepository.save(user,userImage);
         return saveUser.getId();
     }
 
@@ -58,4 +59,8 @@ public class UserService {
         return new EmailValidateDto(true, "정상 처리", HttpStatus.OK);
     }
 
+    @Transactional
+    public void erase(String email) {
+        userRepository.erase(email);
+    }
 }
