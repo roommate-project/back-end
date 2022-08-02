@@ -23,11 +23,26 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String reqURI = request.getRequestURI();
-        String[] requestToken = request.getHeader("authorization").split(" ");
+        String[] requestToken = null;
+        try{
+            requestToken = request.getHeader("authorization").split(" ");
+        }catch(NullPointerException e){
+            response.resetBuffer();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setHeader("Content-Type", "application/json");
+            response.getOutputStream().print("{\"code\":\"401\",");
+            response.getOutputStream().print("\"status\":\"false\",");
+            response.getOutputStream().print("\"message\":\"authorization header missing\",");
+            response.getOutputStream().print("\"timestamp\":\"");
+            response.getOutputStream().print(new Date().toString());
+            response.getOutputStream().print("\"}");
+            response.flushBuffer();
+            return false;
+        }
 
         log.info("{} 인터셉터 인증 시작",reqURI);
 
-        if(requestToken.length != 2){
+        if(requestToken == null || requestToken.length != 2){
             log.info("{} 인터셉터 인증 실패 : {}",reqURI,requestToken.length);
             response.resetBuffer();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
