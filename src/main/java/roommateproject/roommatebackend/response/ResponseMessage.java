@@ -45,7 +45,7 @@ public class ResponseMessage {
     public ResponseMessage(User user) {
         this.code = HttpStatus.OK.value();
         this.status = true;
-        this.message = "회원가입 성공";
+        this.message = user.getId() + " 회원정보 수정";
         this.timestamp = new Date();
     }
 

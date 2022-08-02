@@ -57,9 +57,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        log.info("{} - {} = {}",jwtTokenProvider.getInformation(requestToken[1]).get("time"),new Date(), (long)jwtTokenProvider.getInformation(requestToken[1]).get("time") - new Date().getTime());
+//        log.info("{} - {} = {}",jwtTokenProvider.getInformation(requestToken[1]).get("time"),new Date(), (long)jwtTokenProvider.getInformation(requestToken[1]).get("time") - new Date().getTime());
 
-        log.info("test : {}",jwtTokenProvider.getInformation(requestToken[1]));
+  //      log.info("test : {}",jwtTokenProvider.getInformation(requestToken[1]));
         return true;
     }
 }

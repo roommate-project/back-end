@@ -93,7 +93,7 @@ public class NaverOauthService {
         profileURL = profileURL.substring(1, profileURL.length() - 1);
         gender = gender.substring(1, gender.length() - 1);
 
-        User user = new User(email,name,password,nickName,gender,"naver");
+        User user = new User(email,name,password,nickName,gender,"naver",26);
 
         naverUser.put("user",user);
         naverUser.put("image",profileURL);

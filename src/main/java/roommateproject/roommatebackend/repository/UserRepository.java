@@ -32,8 +32,27 @@ public class UserRepository {
                 .stream().findAny();
     }
 
-    public void erase(String email) {
-        User findUser = findByEmail(email).get();
-        em.remove(findUser);
+    public long erase(User user) {
+        em.remove(user);
+        return user.getId();
+    }
+
+    public User find(Long id) {
+        return em.find(User.class, id);
+    }
+
+    public User change(long id, String password, String nickName, String name) {
+        User user = new User();
+        User findUser = find(id);
+        user.setId(id);
+        user.setEmail(findUser.getEmail());
+        user.setGender(findUser.getGender());
+        user.setRegister(findUser.getRegister());
+        user.setAge(findUser.getAge());
+        user.setPassword(password);
+        user.setName(name);
+        user.setNickName(nickName);
+        em.merge(user);
+        return user;
     }
 }

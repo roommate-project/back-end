@@ -103,7 +103,7 @@ public class KakaoOauthService {
             String profileURL = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("profile_image_url").getAsString();
             String gender = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("gender").getAsString();
             br.close();
-            User user = new User(email,name,password,nickName,gender,"kakao");
+            User user = new User(email,name,password,nickName,gender,"kakao",26);
             kakaoUser.put("user",user);
             kakaoUser.put("image",profileURL);
         } catch (IOException e) {

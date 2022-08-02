@@ -12,9 +12,7 @@ import roommateproject.roommatebackend.dto.UserAddForm;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.file.RepresentImageStore;
-import roommateproject.roommatebackend.file.RestImageStore;
 import roommateproject.roommatebackend.file.SocialImageStore;
-import roommateproject.roommatebackend.repository.UserRepository;
 import roommateproject.roommatebackend.response.ResponseMessage;
 import roommateproject.roommatebackend.service.*;
 
@@ -33,19 +31,16 @@ public class UserController {
 
     private final UserService userService;
     private final SendMailService mailSender;
-    private final UserImageService userImageService;
     private final KakaoOauthService kakaoOauthService;
     private final NaverOauthService naverOauthService;
     private final RepresentImageStore representImageStore;
-    private final UserRepository userRepository;
-    private final RestImageStore restImageStore;
     private final SocialImageStore socialImageStore;
     private static final Map<String, String> emailCheck = new ConcurrentHashMap<>();
     private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
 
     @GetMapping("/api/user")
-    public ResponseMessage emailValidate(@RequestBody HashMap<String, String> request){
+    public ResponseMessage emailValidate(@RequestBody Map<String, String> request){
         return new ResponseMessage(userService.validateEmail(request.get("email")));
     }
 
@@ -119,7 +114,7 @@ public class UserController {
         }else{
             return new ResponseMessage(emailValidateDto);
         }
-        return new ResponseMessage(user);
+        return new ResponseMessage("회원가입 성공");
     }
 
     @GetMapping("/api/user/add/oauth/kakao")
@@ -133,11 +128,11 @@ public class UserController {
         try {
             User user = (User) kakaoUser.get("user");
             String path = (String) kakaoUser.get("image");
-            Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+            Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            UserImage userImage = socialImageStore.storeFile(user, path);
+            UserImage userImage = socialImageStore.storeFile(user, path, "KAKAO");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -158,11 +153,11 @@ public class UserController {
         try {
             User user = (User) naverUser.get("user");
             String path = (String) naverUser.get("image");
-            Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+            Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            UserImage userImage = socialImageStore.storeFile(user, path);
+            UserImage userImage = socialImageStore.storeFile(user, path, "NAVER");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -173,9 +168,4 @@ public class UserController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "네이버 회원가입 완료", new Date());
     }
 
-    @GetMapping("/api/user/erase/{email}")
-    public ResponseMessage eraseUser(@PathVariable(value = "email")String email){
-        userService.erase(email);
-        return new ResponseMessage(HttpStatus.OK.value(), true, "회원탈퇴 완료", new Date());
-    }
 }

@@ -26,8 +26,8 @@ public class SocialImageStore {
         return fileDir + fileSplit[0] + ".jpg";
     }
 
-    public UserImage storeFile(User user, String downloadURL) throws IOException {
-        String originalFileName = "Kakao Download Profile";
+    public UserImage storeFile(User user, String downloadURL, String social) throws IOException {
+        String originalFileName = social + " Download Profile";
         String uuid = UUID.randomUUID().toString();
         String storeFileName = createStoreFileName(originalFileName, uuid);
         String OUTPUT_FILE_PATH = getFullPath(storeFileName);

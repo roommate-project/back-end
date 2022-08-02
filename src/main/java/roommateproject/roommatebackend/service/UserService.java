@@ -13,6 +13,7 @@ import roommateproject.roommatebackend.repository.UserRepository;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -42,25 +43,48 @@ public class UserService {
     }
 
 
+    public Optional<User> findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+
     public EmailValidateDto validateEmail(String requestEmail) {
         if(requestEmail.length() > 50){
-            return new EmailValidateDto(false,"이메일 길이는 50자 이하",HttpStatus.BAD_REQUEST);
+            return new EmailValidateDto(false,"에러 : 이메일 길이는 50자 이하",HttpStatus.BAD_REQUEST);
         }
         String regx = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(regx);
         if(!pattern.matcher(requestEmail).matches()){
-            return new EmailValidateDto(false,"이메일 형식 오류",HttpStatus.BAD_REQUEST);
+            return new EmailValidateDto(false,"에러 : 이메일 형식 오류",HttpStatus.BAD_REQUEST);
         }
 
         Optional<User> findUser = userRepository.findByEmail(requestEmail);
         if(findUser.isPresent()){
-            return new EmailValidateDto(false,"이메일 중복", HttpStatus.BAD_REQUEST);
+            return new EmailValidateDto(false,"에러 : 이메일 중복", HttpStatus.BAD_REQUEST);
         }
         return new EmailValidateDto(true, "정상 처리", HttpStatus.OK);
     }
 
     @Transactional
-    public void erase(String email) {
-        userRepository.erase(email);
+    public long erase(User user) {
+        userRepository.erase(user);
+        return user.getId();
+    }
+
+    public User find(Long id) {
+        return userRepository.find(id);
+    }
+
+    @Transactional
+    public User change(long id, Map<String, String> requestBody) throws NoSuchAlgorithmException {
+        String password = requestBody.get("password");
+        String nickName = requestBody.get("nickName");
+        String name = requestBody.get("name");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.reset();
+        md.update(encrypt.getBytes());
+        byte[] digested = md.digest(password.getBytes());
+        password = String.format("%064x",new BigInteger(1,digested));
+        return userRepository.change(id, password,nickName,name);
     }
 }

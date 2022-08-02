@@ -22,19 +22,24 @@ public class User {
     private String nickName;
     private String gender;
     private String register;
+    private int age;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserImage> images;
 
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Home home;
+
     public User(){}
 
-    public User(String email, String name, String password, String nickName, String gender, String register){
+    public User(String email, String name, String password, String nickName, String gender, String register, int age){
         this.email = email;
         this.name = name;
         this.password = password;
         this.nickName = nickName;
         this.gender = gender;
         this.register = register;
+        this.age = age;
     }
 
     public User(String requestEmail, UserAddForm userAddForm) {

@@ -23,7 +23,7 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public boolean login(String email, String password) throws NoSuchAlgorithmException {
+    public Long login(String email, String password) throws NoSuchAlgorithmException {
 
         if(email == null){
             throw new IllegalArgumentException("이메일 항목이 없음");
@@ -44,16 +44,18 @@ public class LoginService {
         if(!encryptPassword.equals(findUser.getPassword())){
             throw new IllegalArgumentException("비밀번호 불일치");
         }
-        return true;
+        return findUser.getId();
     }
 
-    public void kakaoLogin(String email){
-        userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
+    public Long kakaoLogin(String email){
+        return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"))
+                    .getId();
     }
 
-    public void naverLogin(String email) {
-        userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"));
+    public Long naverLogin(String email) {
+        return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 유저 이메일"))
+                    .getId();
     }
 }
