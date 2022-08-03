@@ -18,11 +18,13 @@ public class Home {
     @JoinColumn(name = "user")
     private User user;
 
-    private int experience;
-    private int want_long;
-    private int room;
-    private int cost;
+    private Integer experience;
+    private Integer want_long;
+    private Integer room;
+    private Integer cost;
     private String info;
+    private String location;
+    private String dormitory;
 
     private Boolean question1;
     private Boolean question2;
@@ -40,6 +42,8 @@ public class Home {
         this.room = userHomeDto.getRoom();
         this.cost = userHomeDto.getCost();
         this.info = userHomeDto.getInfo();
+        this.dormitory = userHomeDto.getDormitory();
+        this.location = userHomeDto.getLocation();
         this.question1 = userHomeDto.getQuestion1();
         this.question2 = userHomeDto.getQuestion2();
         this.question3 = userHomeDto.getQuestion3();

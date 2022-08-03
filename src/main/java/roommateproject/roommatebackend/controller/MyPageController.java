@@ -3,7 +3,6 @@ package roommateproject.roommatebackend.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import roommateproject.roommatebackend.dto.UserDto;
@@ -105,10 +104,7 @@ public class MyPageController {
         String[] requestToken = requestServlet.getHeader("authorization").split(" ");
         Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
         User user = userService.find(id);
-        for (MultipartFile restFile : restFiles) {
-            UserImage userImage = restImageStore.storeFile(user, restFile);
-            imageRepository.save(userImage);
-        }
+        restImageStore.storeFiles(user,restFiles).forEach(i -> imageRepository.save(i));
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }

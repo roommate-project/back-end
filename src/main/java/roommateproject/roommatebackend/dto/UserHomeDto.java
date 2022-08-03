@@ -6,11 +6,13 @@ import roommateproject.roommatebackend.entity.Home;
 @Data
 public class UserHomeDto {
 
-    private int experience;
-    private int want_long;
-    private int room;
-    private int cost;
+    private Integer experience;
+    private Integer want_long;
+    private Integer room;
+    private Integer cost;
     private String info;
+    private String location;
+    private String dormitory;
 
     private Boolean question1;
     private Boolean question2;
@@ -26,6 +28,8 @@ public class UserHomeDto {
         this.room = home.getRoom();
         this.cost = home.getCost();
         this.info = home.getInfo();
+        this.dormitory = home.getDormitory();
+        this.location = home.getLocation();
         this.question1 = home.getQuestion1();
         this.question2 = home.getQuestion2();
         this.question3 = home.getQuestion3();

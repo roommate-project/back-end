@@ -30,6 +30,7 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Home home;
 
+
     public User(){}
 
     public User(String email, String name, String password, String nickName, String gender, String register, int age){
@@ -49,6 +50,7 @@ public class User {
         this.password = userAddForm.getPassword();
         this.gender = userAddForm.getGender();
         this.register = userAddForm.getRegister();
+        this.age = userAddForm.getAge();
     }
 
 }
