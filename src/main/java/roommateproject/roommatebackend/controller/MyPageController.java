@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import roommateproject.roommatebackend.dto.LikeDto;
+import roommateproject.roommatebackend.dto.LikeReturnDto;
 import roommateproject.roommatebackend.dto.UserDto;
 import roommateproject.roommatebackend.dto.UserHomeDto;
 import roommateproject.roommatebackend.entity.Home;
@@ -15,6 +17,7 @@ import roommateproject.roommatebackend.file.RestImageStore;
 import roommateproject.roommatebackend.repository.ImageRepository;
 import roommateproject.roommatebackend.response.ResponseMessage;
 import roommateproject.roommatebackend.service.HomeService;
+import roommateproject.roommatebackend.service.LikeService;
 import roommateproject.roommatebackend.service.UserService;
 import roommateproject.roommatebackend.token.JwtTokenProvider;
 
@@ -37,6 +40,7 @@ public class MyPageController {
     private final ImageRepository imageRepository;
     private final RestImageStore restImageStore;
     private final RepresentImageStore representImageStore;
+    private final LikeService likeService;
 
     @GetMapping("/api/mypage")
     public UserDto userInfo(HttpServletRequest request){
@@ -56,7 +60,6 @@ public class MyPageController {
         }catch(NullPointerException | NoSuchAlgorithmException e){
             e.printStackTrace();
         }
-        log.info("수정 : {}",user.getName());
         return new ResponseMessage(user);
     }
 
@@ -99,24 +102,24 @@ public class MyPageController {
 
     @PostMapping("/api/mypage/image/rest")
     public ResponseMessage addRestImage(HttpServletRequest requestServlet,
-                                        @RequestPart @NotBlank List<MultipartFile> restFiles) throws IOException {
+                                        @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
         String[] requestToken = requestServlet.getHeader("authorization").split(" ");
         Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
         User user = userService.find(id);
-        restImageStore.storeFiles(user,restFiles).forEach(i -> imageRepository.save(i));
+        restImageStore.storeFiles(user,restImages).forEach(i -> imageRepository.save(i));
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
     @PutMapping("/api/mypage/image/represent")
     public ResponseMessage editRepresentImage(HttpServletRequest requestServlet,
-                                        @RequestPart @NotBlank MultipartFile representFile) throws IOException {
+                                        @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 
         String[] requestToken = requestServlet.getHeader("authorization").split(" ");
         Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
         User user = userService.find(id);
-        UserImage userImage = representImageStore.storeFile(user, representFile);
+        UserImage userImage = representImageStore.storeFile(user, representImage);
         imageRepository.change(user, userImage);
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 대표 사진 수정 완료", new Date());
@@ -124,7 +127,7 @@ public class MyPageController {
 
     @PutMapping("/api/mypage/image/rest")
     public ResponseMessage editRestImage(HttpServletRequest requestServlet,
-                                        @RequestPart @NotBlank List<MultipartFile> restFiles) throws IOException {
+                                        @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
         String[] requestToken = requestServlet.getHeader("authorization").split(" ");
         Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
@@ -133,8 +136,8 @@ public class MyPageController {
         if(imageList != null) {
             imageRepository.remove(imageList);
         }
-        for (MultipartFile restFile : restFiles) {
-            UserImage userImage = restImageStore.storeFile(user, restFile);
+        for (MultipartFile restImage : restImages) {
+            UserImage userImage = restImageStore.storeFile(user, restImage);
             imageRepository.save(userImage);
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 수정 완료", new Date());
@@ -151,5 +154,14 @@ public class MyPageController {
             imageRepository.remove(imageList);
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
+    }
+
+    @GetMapping("/api/mypage/like/{pageNumber}")
+    public List<LikeReturnDto> getLikeList(HttpServletRequest requestServlet,
+                                           @PathVariable("pageNumber") int pageNumber){
+        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
+        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
+        User user = userService.find(id);
+        return likeService.getLikeList(user, pageNumber);
     }
 }

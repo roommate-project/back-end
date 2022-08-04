@@ -1,8 +1,11 @@
 package roommateproject.roommatebackend.repository;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import roommateproject.roommatebackend.dto.MatchingDto;
+import roommateproject.roommatebackend.entity.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,19 +17,15 @@ public class MatchingQueryRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Value("${spring.image.represent}")
-    private String fileDir;
+    public List<MatchingDto> findAllUser(Long id, int pageNumber){
 
-    private String location;
-    private String gender;
-    private int likeNumber;
-    private int questionCount;
-    private Long homeId;
-
-    public List<MatchingDto> findAllUser(){
-        return em.createQuery("select new roommateproject.roommatebackend.dto.MatchingDto(ui.storeFileName, u.nickName, h.info, h.location, u.gender ,h.id)" +
-                                    " from User u join fetch UserImage ui join fetch Home h" +
-                                    " where ui.represent = true")
+        return em.createQuery("select new roommateproject.roommatebackend.dto.MatchingDto(ui.storeFileName, u.nickName, h.info, h.location, u.gender, u.age ,h.id, u.id, ui.id)" +
+                                    " from User u join u.images ui join u.home h" +
+                                    " where u.id<>:id", MatchingDto.class)
+                .setParameter("id",id)
+                .setFirstResult((pageNumber - 1) * 10)
+                .setMaxResults(10)
                 .getResultList();
+
     }
 }

@@ -30,6 +30,12 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Home home;
 
+    @OneToMany(mappedBy = "sender",cascade = CascadeType.ALL)
+    private List<LikeIt> likeSender;
+
+    @OneToMany(mappedBy = "receiver",cascade = CascadeType.ALL)
+    private List<LikeIt> likeReceiver;
+
 
     public User(){}
 
