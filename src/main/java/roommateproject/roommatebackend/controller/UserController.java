@@ -157,6 +157,11 @@ public class UserController {
             if(!findUser.isEmpty()){
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
+            if(user.getGender().equals("M")){
+                user.setGender("male");
+            }else{
+                user.setGender("female");
+            }
             UserImage userImage = socialImageStore.storeFile(user, path, "NAVER");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {

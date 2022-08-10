@@ -23,7 +23,7 @@ public class MatchingReturnDto {
         this.age = matchingDto.getAge();
         this.likeNumber = matchingDto.getLikeNumber();
         this.questionCount = matchingDto.getQuestionCount();
-        this.userId = matchingDto.getUserId();
+        this.userId = matchingDto.getUser().getId();
     }
 
 }

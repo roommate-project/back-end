@@ -1,11 +1,10 @@
 package roommateproject.roommatebackend.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import roommateproject.roommatebackend.dto.LikeDto;
 import roommateproject.roommatebackend.dto.LikeReturnDto;
 import roommateproject.roommatebackend.dto.UserDto;
 import roommateproject.roommatebackend.dto.UserHomeDto;
@@ -31,9 +30,10 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@AllArgsConstructor
 public class MyPageController {
 
+    @Value("${spring.image.represent}")
+    private String dir;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final HomeService homeService;
@@ -42,12 +42,24 @@ public class MyPageController {
     private final RepresentImageStore representImageStore;
     private final LikeService likeService;
 
+    public MyPageController(UserService userService, JwtTokenProvider jwtTokenProvider, HomeService homeService, ImageRepository imageRepository, RestImageStore restImageStore, RepresentImageStore representImageStore, LikeService likeService) {
+        this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.homeService = homeService;
+        this.imageRepository = imageRepository;
+        this.restImageStore = restImageStore;
+        this.representImageStore = representImageStore;
+        this.likeService = likeService;
+    }
+
     @GetMapping("/api/mypage")
     public UserDto userInfo(HttpServletRequest request){
         String[] requestToken = request.getHeader("authorization").split(" ");
         User findUser = userService.find(Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString()));
         UserImage userImage = imageRepository.getRepresentImage(findUser);
-        return new UserDto(findUser,userImage);
+        UserDto info =  new UserDto(findUser,userImage);
+        info.setRepresentImage(dir + info.getRepresentImage());
+        return info;
     }
 
     @PutMapping("/api/mypage")
@@ -75,7 +87,7 @@ public class MyPageController {
     public UserHomeDto getUserHomeInfo(HttpServletRequest requestServlet){
         String[] requestToken = requestServlet.getHeader("authorization").split(" ");
         Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        return new UserHomeDto(homeService.find(userService.find(id)));
+        return new UserHomeDto(userService.find(id).getHome());
     }
 
     @PostMapping("/api/mypage/info")
@@ -164,4 +176,5 @@ public class MyPageController {
         User user = userService.find(id);
         return likeService.getLikeList(user, pageNumber);
     }
+
 }

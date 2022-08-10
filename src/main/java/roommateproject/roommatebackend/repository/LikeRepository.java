@@ -48,15 +48,9 @@ public class LikeRepository {
                 .getResultList().size();
     }
 
- /*   public int getSenderCount(User user) {
-        return em.createQuery("select l from LikeIt l where l.sender=:user",LikeIt.class)
-                .setParameter("user",user)
-                .getResultList().size();
-    }
-*/
     public List<LikeDto> getAllLike(User user, int start) {
-        return em.createQuery("select new roommateproject.roommatebackend.dto.LikeDto(ui.storeFileName, l.receiver.id, h.id, h.location)" +
-                                    " from User u join u.home h join u.images ui join u.likeSender l" +
+        return em.createQuery("select new roommateproject.roommatebackend.dto.LikeDto(ui.storeFileName, l.receiver, u.home.id, u.home.location)" +
+                                    " from User u join u.images ui join u.likeSender l" +
                                     " where u.id=:user")
                 .setParameter("user",user.getId())
                 .setFirstResult((start - 1) * 10)

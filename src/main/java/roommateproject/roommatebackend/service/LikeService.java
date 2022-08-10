@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class LikeService {
 
     @Value("${spring.image.represent}")
@@ -43,7 +45,7 @@ public class LikeService {
         List<LikeDto> getLike = likeRepository.getAllLike(user, start);
         getLike.forEach((l) -> {
             l.setRepresentImage(dir + l.getRepresentImage());
-            l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), user));
+            l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), l.getUser()));
         });
         return getLike.stream().map(l -> new LikeReturnDto(l))
                 .collect(Collectors.toList());

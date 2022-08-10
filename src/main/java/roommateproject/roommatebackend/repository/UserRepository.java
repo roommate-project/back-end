@@ -1,6 +1,8 @@
 package roommateproject.roommatebackend.repository;
 
 import org.springframework.stereotype.Repository;
+import roommateproject.roommatebackend.dto.UserHome;
+import roommateproject.roommatebackend.dto.UserHomeImage;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 
@@ -54,5 +56,12 @@ public class UserRepository {
         user.setNickName(nickName);
         em.merge(user);
         return user;
+    }
+
+    public UserHome findUserHome(Long id) {
+        return em.createQuery("select new roommateproject.roommatebackend.dto.UserHome(u, h)" +
+                " from User u join u.home h where u=:user",UserHome.class)
+                .setParameter("user",find(id))
+                .getSingleResult();
     }
 }
