@@ -4,11 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import roommateproject.roommatebackend.argumentresolver.Login;
 import roommateproject.roommatebackend.dto.MatchingDto;
 import roommateproject.roommatebackend.dto.MatchingReturnDto;
 import roommateproject.roommatebackend.dto.UserHome;
-import roommateproject.roommatebackend.dto.UserHomeDto;
-import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.LikeIt;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.response.ResponseMessage;
@@ -46,12 +45,10 @@ public class MatchingController {
     }
 
     @GetMapping("/api/match/{pageNumber}")
-    public List<MatchingReturnDto> getAllUsers(HttpServletRequest httpServletRequest,
+    public List<MatchingReturnDto> getAllUsers(@Login User loginUser,
                                                @PathVariable("pageNumber") int pageNumber){
-        String[] requestToken = httpServletRequest.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        List<MatchingDto> findAllUsers =  matchingService.findAllUserPagination(user,pageNumber);
+
+        List<MatchingDto> findAllUsers =  matchingService.findAllUserPagination(loginUser,pageNumber);
         findAllUsers.forEach(u -> u.setRepresentImage(dir + u.getRepresentImage()));
         return findAllUsers
                 .stream().map(m -> new MatchingReturnDto(m))
@@ -59,7 +56,7 @@ public class MatchingController {
     }
 
     @GetMapping("/api/match/filter/{pageNumber}")
-    public List<MatchingReturnDto> filterUser(HttpServletRequest httpServletRequest,
+    public List<MatchingReturnDto> filterUser(@Login User loginUser,
                               @PathVariable("pageNumber") int pageNumber,
                               @RequestParam(value = "rate",defaultValue = "0") int rate,
                               @RequestParam(value = "gender",defaultValue = "all") String gender,
@@ -68,10 +65,7 @@ public class MatchingController {
                               @RequestParam(value = "ageMax",defaultValue = "100") int ageMax,
                               @RequestParam(value = "ageMin",defaultValue = "0") int ageMin){
 
-        String[] requestToken = httpServletRequest.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        UserHome userhome = new UserHome(user,homeService.find(user));
+        UserHome userhome = new UserHome(loginUser,homeService.find(loginUser));
         List<MatchingDto> findAllUsers =  matchingService.findFilterUser(userhome,pageNumber,rate * 6 / 100,gender,experienceMax,experienceMin,ageMax,ageMin);
         findAllUsers.forEach(u -> u.setRepresentImage(dir + u.getRepresentImage()));
         return findAllUsers
@@ -80,14 +74,11 @@ public class MatchingController {
     }
 
     @PostMapping("/api/match/like")
-    public ResponseMessage changeLike(HttpServletRequest httpServletRequest,
+    public ResponseMessage changeLike(@Login User loginUser,
                                       @RequestBody Map<String, Object> req){
-        String[] requestToken = httpServletRequest.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User reqUser = userService.find(id);
         Long likeId = Long.parseLong((String)req.get("id"));
         User likeUser = userService.find(likeId);
-        LikeIt likeIt = new LikeIt(reqUser, likeUser);
+        LikeIt likeIt = new LikeIt(loginUser, likeUser);
         Boolean check = likeService.save(likeIt);
 
         if(check){
@@ -98,7 +89,7 @@ public class MatchingController {
     }
 
     @GetMapping("/api/match/info/{userId}")
-    public User getUserInfo(@PathVariable("userId") Long userId){
+    public User getUserInfo(@PathVariable("userId") Long userId,@Login User loginUser){
         return null;
     }
 }

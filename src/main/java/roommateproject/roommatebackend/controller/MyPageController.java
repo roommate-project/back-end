@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import roommateproject.roommatebackend.argumentresolver.Login;
 import roommateproject.roommatebackend.dto.LikeReturnDto;
 import roommateproject.roommatebackend.dto.UserDto;
 import roommateproject.roommatebackend.dto.UserHomeDto;
@@ -53,22 +54,19 @@ public class MyPageController {
     }
 
     @GetMapping("/api/mypage")
-    public UserDto userInfo(HttpServletRequest request){
-        String[] requestToken = request.getHeader("authorization").split(" ");
-        User findUser = userService.find(Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString()));
-        UserImage userImage = imageRepository.getRepresentImage(findUser);
-        UserDto info =  new UserDto(findUser,userImage);
+    public UserDto userInfo(@Login User loginUser){
+        UserImage userImage = imageRepository.getRepresentImage(loginUser);
+        UserDto info =  new UserDto(loginUser,userImage);
         info.setRepresentImage(dir + info.getRepresentImage());
         return info;
     }
 
     @PutMapping("/api/mypage")
-    public ResponseMessage editUserInfo(HttpServletRequest requestServlet,
+    public ResponseMessage editUserInfo(@Login User loginUser,
                                         @RequestBody Map<String, String> requestBody){
         User user = null;
         try{
-            String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-            user = userService.change(Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString()),requestBody);
+            user = userService.change(loginUser.getId(),requestBody);
         }catch(NullPointerException | NoSuchAlgorithmException e){
             e.printStackTrace();
         }
@@ -76,92 +74,71 @@ public class MyPageController {
     }
 
     @GetMapping("/api/mypage/drop")
-    public ResponseMessage eraseUser(HttpServletRequest requestServlet){
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        userService.erase(userService.find(id));
+    public ResponseMessage eraseUser(@Login User loginUser){
+        userService.erase(loginUser);
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원탈퇴 완료", new Date());
     }
 
     @GetMapping("/api/mypage/info")
-    public UserHomeDto getUserHomeInfo(HttpServletRequest requestServlet){
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        return new UserHomeDto(userService.find(id).getHome());
+    public UserHomeDto getUserHomeInfo(@Login User loginUser){
+        return new UserHomeDto(loginUser.getHome());
     }
 
     @PostMapping("/api/mypage/info")
-    public ResponseMessage saveUserHomeInfo(HttpServletRequest requestServlet,
+    public ResponseMessage saveUserHomeInfo(@Login User loginUser,
                                             @RequestBody UserHomeDto request){
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        Home home = new Home(user, request);
+
+        Home home = new Home(loginUser, request);
         homeService.save(home);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 저장 완료", new Date());
     }
 
     @PutMapping("/api/mypage/info")
-    public ResponseMessage editUserHomeInfo(HttpServletRequest requestServlet,
+    public ResponseMessage editUserHomeInfo(@Login User loginUser,
                                             @RequestBody UserHomeDto request){
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        Home home = homeService.find(user);
-        homeService.change(user, home, request);
+        Home home = homeService.find(loginUser);
+        homeService.change(loginUser, home, request);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
     }
 
     @PostMapping("/api/mypage/image/rest")
-    public ResponseMessage addRestImage(HttpServletRequest requestServlet,
+    public ResponseMessage addRestImage(@Login User loginUser,
                                         @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        restImageStore.storeFiles(user,restImages).forEach(i -> imageRepository.save(i));
+        restImageStore.storeFiles(loginUser,restImages).forEach(i -> imageRepository.save(i));
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
     @PutMapping("/api/mypage/image/represent")
-    public ResponseMessage editRepresentImage(HttpServletRequest requestServlet,
+    public ResponseMessage editRepresentImage(@Login User loginUser,
                                         @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        UserImage userImage = representImageStore.storeFile(user, representImage);
-        imageRepository.change(user, userImage);
+        UserImage userImage = representImageStore.storeFile(loginUser, representImage);
+        imageRepository.change(loginUser, userImage);
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 대표 사진 수정 완료", new Date());
     }
 
     @PutMapping("/api/mypage/image/rest")
-    public ResponseMessage editRestImage(HttpServletRequest requestServlet,
+    public ResponseMessage editRestImage(@Login User loginUser,
                                         @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        List<UserImage> imageList = imageRepository.getRestImage(user);
+        List<UserImage> imageList = imageRepository.getRestImage(loginUser);
         if(imageList != null) {
             imageRepository.remove(imageList);
         }
         for (MultipartFile restImage : restImages) {
-            UserImage userImage = restImageStore.storeFile(user, restImage);
+            UserImage userImage = restImageStore.storeFile(loginUser, restImage);
             imageRepository.save(userImage);
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 수정 완료", new Date());
     }
 
     @DeleteMapping("/api/mypage/image/rest")
-    public ResponseMessage removeRestImage(HttpServletRequest requestServlet) {
+    public ResponseMessage removeRestImage(@Login User loginUser) {
 
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        List<UserImage> imageList = imageRepository.getRestImage(user);
+        List<UserImage> imageList = imageRepository.getRestImage(loginUser);
         if(imageList != null) {
             imageRepository.remove(imageList);
         }
@@ -169,12 +146,10 @@ public class MyPageController {
     }
 
     @GetMapping("/api/mypage/like/{pageNumber}")
-    public List<LikeReturnDto> getLikeList(HttpServletRequest requestServlet,
+    public List<LikeReturnDto> getLikeList(@Login User loginUser,
                                            @PathVariable("pageNumber") int pageNumber){
-        String[] requestToken = requestServlet.getHeader("authorization").split(" ");
-        Long id = Long.parseLong(jwtTokenProvider.getInformation(requestToken[1]).get("jti").toString());
-        User user = userService.find(id);
-        return likeService.getLikeList(user, pageNumber);
+
+        return likeService.getLikeList(loginUser, pageNumber);
     }
 
 }
