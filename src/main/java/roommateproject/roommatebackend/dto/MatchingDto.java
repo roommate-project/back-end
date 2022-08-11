@@ -1,7 +1,9 @@
 package roommateproject.roommatebackend.dto;
 
 import lombok.Data;
+import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.User;
+import roommateproject.roommatebackend.entity.UserImage;
 
 @Data
 public class MatchingDto {
@@ -30,15 +32,15 @@ public class MatchingDto {
         this.userImageId = userImageId;
     }
 
-    public MatchingDto(UserHomeImage userHomeImage) {
-        this.representImage = userHomeImage.getUserImage().getStoreFileName();
-        this.nickName = userHomeImage.getUser().getNickName();
-        this.info = userHomeImage.getHome().getInfo();
-        this.location = userHomeImage.getHome().getLocation();
-        this.gender = userHomeImage.getUser().getGender();
-        this.age = userHomeImage.getUser().getAge();
-        this.homeId = userHomeImage.getHome().getId();
-        this.user = userHomeImage.getUser();
-        this.userImageId = userHomeImage.getUserImage().getId();
+    public MatchingDto(User user, Home home, UserImage userImage) {
+        this.representImage = userImage.getStoreFileName();
+        this.nickName = user.getNickName();
+        this.info = home.getInfo();
+        this.location = home.getLocation();
+        this.gender = user.getGender();
+        this.age = user.getAge();
+        this.homeId = home.getId();
+        this.user = user;
+        this.userImageId = userImage.getId();
     }
 }

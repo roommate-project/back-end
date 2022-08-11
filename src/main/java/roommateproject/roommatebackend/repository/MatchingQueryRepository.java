@@ -1,10 +1,7 @@
 package roommateproject.roommatebackend.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import roommateproject.roommatebackend.dto.MatchingDto;
-import roommateproject.roommatebackend.dto.UserHome;
-import roommateproject.roommatebackend.dto.UserHomeImage;
 import roommateproject.roommatebackend.entity.User;
 
 import javax.persistence.EntityManager;
@@ -29,13 +26,13 @@ public class MatchingQueryRepository {
 
     }
 
-    public List<User> findFilter(UserHome userHome, int pageNumber, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {
+    public List<User> findFilter(User loginUser, int pageNumber, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {
         if(gender.equals("all")){
             return em.createQuery("select u" +
                                         " from User u" +
                                         " where u<>:user and u.age between :ageMin and :ageMax" +
                                         " and u.home.experience between :experienceMin and :experienceMax", User.class)
-                    .setParameter("user",userHome.getUser())
+                    .setParameter("user",loginUser)
                     .setParameter("ageMin",ageMin)
                     .setParameter("ageMax",ageMax)
                     .setParameter("experienceMax",experienceMax)
@@ -49,7 +46,7 @@ public class MatchingQueryRepository {
                         " where u<>:user and u.age between :ageMin and :ageMax" +
                         " and u.home.experience between :experienceMin and :experienceMax" +
                         " and u.gender=:gender", User.class)
-                .setParameter("user",userHome.getUser())
+                .setParameter("user",loginUser)
                 .setParameter("ageMin",ageMin)
                 .setParameter("ageMax",ageMax)
                 .setParameter("gender",gender)

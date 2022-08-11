@@ -11,6 +11,7 @@ public class UserHomeDto {
     private Integer room;
     private Integer cost;
     private String info;
+    private String houseInfo;
     private String location;
     private String dormitory;
 
@@ -28,6 +29,7 @@ public class UserHomeDto {
         this.room = home.getRoom();
         this.cost = home.getCost();
         this.info = home.getInfo();
+        this.houseInfo = home.getHouseInfo();
         this.dormitory = home.getDormitory();
         this.location = home.getLocation();
         this.question1 = home.getQuestion1();

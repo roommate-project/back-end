@@ -33,7 +33,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-  //      log.info("LoginUserArgumentResolver resolveArgument 실행");
+
         HttpServletRequest req = (HttpServletRequest)webRequest.getNativeRequest();
         String[] requestToken = req.getHeader("authorization").split(" ");
         if(requestToken == null || requestToken.length != 2){

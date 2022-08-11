@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roommateproject.roommatebackend.dto.EmailValidateDto;
-import roommateproject.roommatebackend.dto.UserHome;
-import roommateproject.roommatebackend.dto.UserHomeImage;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.repository.UserRepository;

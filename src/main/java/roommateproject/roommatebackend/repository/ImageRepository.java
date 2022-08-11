@@ -25,6 +25,11 @@ public class ImageRepository {
                 .setParameter("user", user).getResultList();
     }
 
+    public List<UserImage> getAllImage(User user){
+        return em.createQuery("select ui from UserImage  ui where ui.user = :user", UserImage.class)
+                .setParameter("user", user).getResultList();
+    }
+
     @Transactional
     public UserImage save(UserImage userImage){
         em.persist(userImage);
