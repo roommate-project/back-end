@@ -1,6 +1,5 @@
 package roommateproject.roommatebackend.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 @RestController
-@AllArgsConstructor @Slf4j
+@Slf4j
 public class UserController {
 
     @Value("${spring.ip}")
@@ -42,6 +41,15 @@ public class UserController {
     private static final Map<String, String> emailCheck = new ConcurrentHashMap<>();
     private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
+
+    public UserController(UserService userService, SendMailService mailSender, KakaoOauthService kakaoOauthService, NaverOauthService naverOauthService, RepresentImageStore representImageStore, SocialImageStore socialImageStore) {
+        this.userService = userService;
+        this.mailSender = mailSender;
+        this.kakaoOauthService = kakaoOauthService;
+        this.naverOauthService = naverOauthService;
+        this.representImageStore = representImageStore;
+        this.socialImageStore = socialImageStore;
+    }
 
     @PostMapping("/api/user/emailValidate")
     public ResponseMessage emailValidate(@RequestParam("email") String email){

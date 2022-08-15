@@ -1,6 +1,5 @@
 package roommateproject.roommatebackend.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController @Slf4j
-@AllArgsConstructor
 public class LoginController {
 
     @Value("${spring.ip}")
@@ -26,6 +24,14 @@ public class LoginController {
     private final JwtTokenProvider tokenProvider;
     private final KakaoOauthService kakaoOauthService;
     private final NaverOauthService naverOauthService;
+
+    public LoginController(LoginService loginService, JwtTokenProvider tokenProvider, KakaoOauthService kakaoOauthService, NaverOauthService naverOauthService) {
+        this.loginService = loginService;
+        this.tokenProvider = tokenProvider;
+        this.kakaoOauthService = kakaoOauthService;
+        this.naverOauthService = naverOauthService;
+    }
+
     @PostMapping("/api/login")
     public ResponseMessage login(@RequestBody Map<String, String> request){
 
