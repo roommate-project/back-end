@@ -2,6 +2,7 @@ package roommateproject.roommatebackend.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import roommateproject.roommatebackend.entity.User;
@@ -12,7 +13,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Service @Slf4j
 public class KakaoOauthService {
 
     @Value("${spring.password.kakao}")
@@ -61,7 +62,6 @@ public class KakaoOauthService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return accessToken;
     }
 
@@ -127,6 +127,9 @@ public class KakaoOauthService {
             conn.setRequestProperty("Authorization", "Bearer " + token);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            int responseCode = conn.getResponseCode();
+
             String line = "";
             String result = "";
 

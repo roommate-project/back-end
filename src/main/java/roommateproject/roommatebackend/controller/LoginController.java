@@ -2,6 +2,7 @@ package roommateproject.roommatebackend.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import roommateproject.roommatebackend.response.ResponseMessage;
@@ -17,6 +18,9 @@ import java.util.Map;
 @RestController @Slf4j
 @AllArgsConstructor
 public class LoginController {
+
+    @Value("${spring.ip}")
+    private String ip;
 
     private final LoginService loginService;
     private final JwtTokenProvider tokenProvider;
@@ -44,7 +48,7 @@ public class LoginController {
     @GetMapping("/api/login/oauth/kakao")
     public ResponseMessage kakaoLogin(@RequestParam String code){
 
-        String kakaoEmail = kakaoOauthService.findKakaoEmail(kakaoOauthService.getKakaoAccessToken(code,"http://localhost:8080/api/login/oauth/kakao"));
+        String kakaoEmail = kakaoOauthService.findKakaoEmail(kakaoOauthService.getKakaoAccessToken(code,"http://" + ip + "/api/login/oauth/kakao"));
         Long id;
         if(kakaoEmail == null){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
@@ -60,7 +64,7 @@ public class LoginController {
     @GetMapping("/api/login/oauth/naver")
     public ResponseMessage naverLogin(@RequestParam String code){
 
-        String naverEmail = naverOauthService.findNaverEmail(naverOauthService.getNaverAccessToken(code,"http://localhost:8080/api/login/oauth/kakao"));
+        String naverEmail = naverOauthService.findNaverEmail(naverOauthService.getNaverAccessToken(code,"http://" + ip + "/api/login/oauth/kakao"));
         Long id;
         if(naverEmail == null){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요", new Date());

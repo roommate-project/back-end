@@ -2,6 +2,7 @@ package roommateproject.roommatebackend.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -28,6 +29,9 @@ import java.util.regex.Pattern;
 @RestController
 @AllArgsConstructor @Slf4j
 public class UserController {
+
+    @Value("${spring.ip}")
+    private String ip;
 
     private final UserService userService;
     private final SendMailService mailSender;
@@ -121,7 +125,7 @@ public class UserController {
     public ResponseMessage kakaoAddUser(@RequestParam String code){
         //https://kauth.kakao.com/oauth/authorize?client_id=26fc82315434c1ec0e23b5a0aa5076e5&redirect_uri=http://localhost:8080/api/user/add/oauth/kakao&response_type=code
 
-        Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://localhost:8080/api/user/add/oauth/kakao"));
+        Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://" + ip + "/api/user/add/oauth/kakao"));
         if(kakaoUser == null){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
         }
@@ -145,7 +149,7 @@ public class UserController {
     @GetMapping("/api/user/add/oauth/naver")
     public ResponseMessage naverAddUser(@RequestParam String code){
 
-        String token = naverOauthService.getNaverAccessToken(code,"http://localhost:8080/api/user/add/oauth/naver");
+        String token = naverOauthService.getNaverAccessToken(code,ip + "/api/user/add/oauth/naver");
         Map<String, Object> naverUser = naverOauthService.createNaverUser(token);
         if(naverUser == null){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
