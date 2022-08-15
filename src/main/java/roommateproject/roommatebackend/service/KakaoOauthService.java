@@ -44,6 +44,8 @@ public class KakaoOauthService {
 
             int responseCode = conn.getResponseCode();
 
+            log.info("responseCode in Access Token : {}",responseCode);
+
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
             String result = "";
@@ -62,6 +64,7 @@ public class KakaoOauthService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        log.info("Kakao Access token : {}",accessToken);
         return accessToken;
     }
 
@@ -82,6 +85,8 @@ public class KakaoOauthService {
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
             String result = "";
+
+            log.info("responsCode in create User : {}",conn.getResponseCode());
 
             while ((line = br.readLine()) != null) {
                 result += line;

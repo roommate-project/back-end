@@ -1,6 +1,7 @@
 package roommateproject.roommatebackend.dto;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 
@@ -12,6 +13,9 @@ public class UserDto {
     private int age;
     private String gender;
 
+    @Value("${spring.image.represent}")
+    private String dir;
+
     private String representImage;
 
     public UserDto(User findUser, UserImage userImage) {
@@ -19,6 +23,6 @@ public class UserDto {
         this.nickName = findUser.getNickName();
         this.age = findUser.getAge();
         this.gender = findUser.getGender();
-        this.representImage = "C:/Users/koscom/back-end/image/represent/" + userImage.getStoreFileName();
+        this.representImage = dir + userImage.getStoreFileName();
     }
 }

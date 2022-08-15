@@ -43,9 +43,9 @@ public class UserController {
     private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
 
-    @GetMapping("/api/user")
-    public ResponseMessage emailValidate(@RequestBody Map<String, String> request){
-        return new ResponseMessage(userService.validateEmail(request.get("email")));
+    @PostMapping("/api/user/emailValidate")
+    public ResponseMessage emailValidate(@RequestParam("email") String email){
+        return new ResponseMessage(userService.validateEmail(email));
     }
 
     @GetMapping("/api/user/validate")
@@ -123,7 +123,6 @@ public class UserController {
 
     @GetMapping("/api/user/add/oauth/kakao")
     public ResponseMessage kakaoAddUser(@RequestParam String code){
-        //https://kauth.kakao.com/oauth/authorize?client_id=26fc82315434c1ec0e23b5a0aa5076e5&redirect_uri=http://localhost:8080/api/user/add/oauth/kakao&response_type=code
 
         Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://" + ip + "/api/user/add/oauth/kakao"));
         if(kakaoUser == null){
@@ -149,7 +148,7 @@ public class UserController {
     @GetMapping("/api/user/add/oauth/naver")
     public ResponseMessage naverAddUser(@RequestParam String code){
 
-        String token = naverOauthService.getNaverAccessToken(code,ip + "/api/user/add/oauth/naver");
+        String token = naverOauthService.getNaverAccessToken(code,"http:/" + ip + "/api/user/add/oauth/naver");
         Map<String, Object> naverUser = naverOauthService.createNaverUser(token);
         if(naverUser == null){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
