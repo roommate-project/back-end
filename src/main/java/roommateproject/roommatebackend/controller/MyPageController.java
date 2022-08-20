@@ -79,6 +79,9 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원탈퇴 완료", new Date());
     }
 
+    @GetMapping("/api/mypage/home")
+    public User get
+
     @GetMapping("/api/mypage/info")
     public UserHomeDto getUserHomeInfo(@Login User loginUser){
         return new UserHomeDto(loginUser.getHome());

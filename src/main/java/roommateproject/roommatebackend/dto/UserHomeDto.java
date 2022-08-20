@@ -3,6 +3,9 @@ package roommateproject.roommatebackend.dto;
 import lombok.Data;
 import roommateproject.roommatebackend.entity.Home;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class UserHomeDto {
 
@@ -15,12 +18,13 @@ public class UserHomeDto {
     private String location;
     private String dormitory;
 
-    private Boolean question1;
-    private Boolean question2;
-    private Boolean question3;
-    private Boolean question4;
-    private Boolean question5;
-    private Boolean question6;
+    private List<Boolean> question;
+ //   private Boolean question1;
+   // private Boolean question2;
+//    private Boolean question3;
+  //  private Boolean question4;
+    //private Boolean question5;
+   // private Boolean question6;
 
     public UserHomeDto(){}
     public UserHomeDto(Home home){
@@ -32,11 +36,18 @@ public class UserHomeDto {
         this.houseInfo = home.getHouseInfo();
         this.dormitory = home.getDormitory();
         this.location = home.getLocation();
-        this.question1 = home.getQuestion1();
-        this.question2 = home.getQuestion2();
-        this.question3 = home.getQuestion3();
-        this.question4 = home.getQuestion4();
-        this.question5 = home.getQuestion5();
-        this.question6 = home.getQuestion6();
+        this.question = new ArrayList<>();
+        this.question.add(home.getQuestion1());
+        this.question.add(home.getQuestion2());
+        this.question.add(home.getQuestion3());
+        this.question.add(home.getQuestion4());
+        this.question.add(home.getQuestion5());
+        this.question.add(home.getQuestion6());
+ //       this.question1 = home.getQuestion1();
+   //     this.question2 = home.getQuestion2();
+     //   this.question3 = home.getQuestion3();
+       // this.question4 = home.getQuestion4();
+       // this.question5 = home.getQuestion5();
+        //this.question6 = home.getQuestion6();
     }
 }

@@ -46,11 +46,19 @@ public class Home {
         this.houseInfo = userHomeDto.getHouseInfo();
         this.dormitory = userHomeDto.getDormitory();
         this.location = userHomeDto.getLocation();
-        this.question1 = userHomeDto.getQuestion1();
+        this.question1 = userHomeDto.getQuestion().get(0);
+        this.question2 = userHomeDto.getQuestion().get(1);
+        this.question3 = userHomeDto.getQuestion().get(2);
+        this.question4 = userHomeDto.getQuestion().get(3);
+        this.question5 = userHomeDto.getQuestion().get(4);
+        this.question6 = userHomeDto.getQuestion().get(5);
+ /*       this.question1 = userHomeDto.getQuestion1();
         this.question2 = userHomeDto.getQuestion2();
         this.question3 = userHomeDto.getQuestion3();
         this.question4 = userHomeDto.getQuestion4();
         this.question5 = userHomeDto.getQuestion5();
         this.question6 = userHomeDto.getQuestion6();
+
+  */
     }
 }

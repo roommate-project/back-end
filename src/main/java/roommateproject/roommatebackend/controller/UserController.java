@@ -92,7 +92,7 @@ public class UserController {
     @PostMapping(value = "/api/user/add",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage addUser(@RequestParam(value = "email") @Email String requestEmail,
                                    @RequestPart(value = "userAddForm") @Valid UserAddForm userAddForm,
-                                   @RequestPart @NotBlank MultipartFile representFile,
+                                   @RequestPart MultipartFile representFile,
                                    @RequestPart @Nullable List<MultipartFile> restFiles) throws IOException {
 
  /*       if(emailCodeComplete.get(requestEmail) == null){
@@ -108,8 +108,7 @@ public class UserController {
         if(!pattern.matcher(userAddForm.getPassword()).matches()){
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(),false,"비밀번호는 숫자와 영문자로 구성",new Date());
         }
-        userAddForm.setRegister("email");
-        User user = new User(requestEmail,userAddForm);
+        User user = new User(requestEmail,userAddForm, "email");
 
         EmailValidateDto emailValidateDto= userService.validateEmail(requestEmail);
         if(emailValidateDto.isValidate()) {

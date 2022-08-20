@@ -49,13 +49,13 @@ public class User {
         this.age = age;
     }
 
-    public User(String requestEmail, UserAddForm userAddForm) {
+    public User(String requestEmail, UserAddForm userAddForm, String register) {
         this.email = requestEmail;
         this.name = userAddForm.getName();
         this.nickName = userAddForm.getNickName();
         this.password = userAddForm.getPassword();
         this.gender = userAddForm.getGender();
-        this.register = userAddForm.getRegister();
+        this.register = register;
         this.age = userAddForm.getAge();
     }
 

@@ -18,7 +18,7 @@ public class UserAddForm {
     @NotNull
     private String gender;
 
-    private String register;
+  //  private String register;
     private int age;
 
 }
