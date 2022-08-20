@@ -3,9 +3,11 @@ package roommateproject.roommatebackend.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import roommateproject.roommatebackend.argumentresolver.Login;
+import roommateproject.roommatebackend.dto.HomeDto;
 import roommateproject.roommatebackend.dto.LikeReturnDto;
 import roommateproject.roommatebackend.dto.UserDto;
 import roommateproject.roommatebackend.dto.UserHomeDto;
@@ -28,24 +30,26 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
 public class MyPageController {
 
     @Value("${spring.image.represent}")
-    private String dir;
+    private String representDir;
+
+    @Value("${spring.image.rest}")
+    private String restDir;
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final HomeService homeService;
     private final ImageRepository imageRepository;
     private final RestImageStore restImageStore;
     private final RepresentImageStore representImageStore;
     private final LikeService likeService;
 
-    public MyPageController(UserService userService, JwtTokenProvider jwtTokenProvider, HomeService homeService, ImageRepository imageRepository, RestImageStore restImageStore, RepresentImageStore representImageStore, LikeService likeService) {
+    public MyPageController(UserService userService, HomeService homeService, ImageRepository imageRepository, RestImageStore restImageStore, RepresentImageStore representImageStore, LikeService likeService) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.homeService = homeService;
         this.imageRepository = imageRepository;
         this.restImageStore = restImageStore;
@@ -57,7 +61,7 @@ public class MyPageController {
     public UserDto userInfo(@Login User loginUser){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
         UserDto info =  new UserDto(loginUser,userImage);
-        info.setRepresentImage(dir + info.getRepresentImage());
+        info.setRepresentImage(representDir + info.getRepresentImage());
         return info;
     }
 
@@ -80,10 +84,15 @@ public class MyPageController {
     }
 
     @GetMapping("/api/mypage/home")
-    public User get
+    public HomeDto getHomeInfo(@Login User loginUser){
+        List<String> images = imageRepository.getRestImage(loginUser)
+                .stream().map(i -> representDir + i.getStoreFileName())
+                .collect(Collectors.toList());
+        return new HomeDto(loginUser.getHome(),images);
+    }
 
     @GetMapping("/api/mypage/info")
-    public UserHomeDto getUserHomeInfo(@Login User loginUser){
+    public UserHomeDto getUserMatchInfo(@Login User loginUser){
         return new UserHomeDto(loginUser.getHome());
     }
 
@@ -104,7 +113,7 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
     }
 
-    @PostMapping("/api/mypage/image/rest")
+    @PostMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage addRestImage(@Login User loginUser,
                                         @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
