@@ -8,9 +8,12 @@ import roommateproject.roommatebackend.dto.LikeDto;
 import roommateproject.roommatebackend.dto.LikeReturnDto;
 import roommateproject.roommatebackend.entity.LikeIt;
 import roommateproject.roommatebackend.entity.User;
+import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.repository.HomeRepository;
+import roommateproject.roommatebackend.repository.ImageRepository;
 import roommateproject.roommatebackend.repository.LikeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,10 +25,12 @@ public class LikeService {
     @Value("${spring.image.represent}")
     private String dir;
     private final LikeRepository likeRepository;
+    private final ImageRepository imageRepository;
     private final HomeRepository homeRepository;
 
-    public LikeService(LikeRepository likeRepository, HomeRepository homeRepository) {
+    public LikeService(LikeRepository likeRepository, ImageRepository imageRepository, HomeRepository homeRepository) {
         this.likeRepository = likeRepository;
+        this.imageRepository = imageRepository;
         this.homeRepository = homeRepository;
     }
 
@@ -42,12 +47,19 @@ public class LikeService {
     }
 
     public List<LikeReturnDto> getLikeList(User user, int start) {
-        List<LikeDto> getLike = likeRepository.getAllLike(user, start);
+        //List<LikeDto> getLike = likeRepository.getAllLike(user, start);
+        List<LikeIt> getLike = likeRepository.getAllLike(user, start);
+        List<LikeDto> likeDtos = new ArrayList<>();
         getLike.forEach((l) -> {
+            UserImage ui = imageRepository.getRepresentImage(l.getReceiver());
+            likeDtos.add(new LikeDto(dir + ui.getStoreFileName(),l.getReceiver(),l.getReceiver().getHome().getId(),l.getReceiver().getHome().getLocation()));
+        });
+   //     tmp.forEach(a -> log.info("{}, {}",a.getSender().getEmail(),a.getReceiver().getEmail()));
+        likeDtos.forEach((l) -> {
             l.setRepresentImage(dir + l.getRepresentImage());
             l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), l.getUser()));
         });
-        return getLike.stream().map(l -> new LikeReturnDto(l))
+        return likeDtos.stream().map(l -> new LikeReturnDto(l))
                 .collect(Collectors.toList());
     }
 }

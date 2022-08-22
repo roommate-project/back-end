@@ -48,9 +48,9 @@ public class LikeRepository {
                 .getResultList().size();
     }
 
-    public List<LikeDto> getAllLike(User user, int start) {
-        return em.createQuery("select new roommateproject.roommatebackend.dto.LikeDto(ui.storeFileName, l.receiver, u.home.id, u.home.location)" +
-                                    " from User u join u.images ui join u.likeSender l" +
+    public List<LikeIt> getAllLike(User user, int start) {
+        return em.createQuery("select l" +
+                                    " from User u join u.likeSender l" +
                                     " where u.id=:user")
                 .setParameter("user",user.getId())
                 .setFirstResult((start - 1) * 10)

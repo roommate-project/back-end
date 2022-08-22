@@ -13,16 +13,13 @@ public class UserDto {
     private int age;
     private String gender;
 
-    @Value("${spring.image.represent}")
-    private String dir;
-
     private String representImage;
 
-    public UserDto(User findUser, UserImage userImage) {
+    public UserDto(User findUser, UserImage userImage, String representDir) {
         this.name = findUser.getName();
         this.nickName = findUser.getNickName();
         this.age = findUser.getAge();
         this.gender = findUser.getGender();
-        this.representImage = dir + userImage.getStoreFileName();
+        this.representImage = representDir + userImage.getStoreFileName();
     }
 }

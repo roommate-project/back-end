@@ -60,7 +60,7 @@ public class MyPageController {
     @GetMapping("/api/mypage")
     public UserDto userInfo(@Login User loginUser){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
-        UserDto info =  new UserDto(loginUser,userImage);
+        UserDto info =  new UserDto(loginUser,userImage,representDir);
         info.setRepresentImage(representDir + info.getRepresentImage());
         return info;
     }
@@ -86,7 +86,7 @@ public class MyPageController {
     @GetMapping("/api/mypage/home")
     public HomeDto getHomeInfo(@Login User loginUser){
         List<String> images = imageRepository.getRestImage(loginUser)
-                .stream().map(i -> representDir + i.getStoreFileName())
+                .stream().map(i -> restDir + i.getStoreFileName())
                 .collect(Collectors.toList());
         return new HomeDto(loginUser.getHome(),images);
     }
