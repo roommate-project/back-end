@@ -49,9 +49,7 @@ public class LikeRepository {
     }
 
     public List<LikeIt> getAllLike(User user, int start) {
-        return em.createQuery("select l" +
-                                    " from User u join u.likeSender l" +
-                                    " where u.id=:user")
+        return em.createQuery("select l from User u join u.likeSender l where u.id=:user")
                 .setParameter("user",user.getId())
                 .setFirstResult((start - 1) * 10)
                 .setMaxResults(10)

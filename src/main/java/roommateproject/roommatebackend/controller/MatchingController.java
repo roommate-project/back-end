@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@CrossOrigin
 public class MatchingController {
 
     @Value("${spring.image.represent}")

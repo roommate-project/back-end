@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController @Slf4j
+@CrossOrigin
 public class LoginController {
 
     @Value("${spring.ip}")

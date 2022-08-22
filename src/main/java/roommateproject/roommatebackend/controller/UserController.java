@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 @RestController
 @Slf4j
+@CrossOrigin
 public class UserController {
 
     @Value("${spring.ip}")
