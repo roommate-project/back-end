@@ -14,11 +14,9 @@ public class MatchingQueryRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public List<MatchingDto> findAllUserPagination(User user, int pageNumber){
+    public List<User> findAllUserPagination(User user, int pageNumber){
 
-        return em.createQuery("select new roommateproject.roommatebackend.dto.MatchingDto(ui.storeFileName, u.nickName, u.home.info, u.home.location, u.gender, u.age ,u.home.id, u, ui.id)" +
-                                    " from User u join u.images ui" +
-                                    " where u.id<>:id", MatchingDto.class)
+        return em.createQuery("select u from User u where u.id<>:id", User.class)
                 .setParameter("id",user.getId())
                 .setFirstResult((pageNumber - 1) * 10)
                 .setMaxResults(10)
@@ -28,8 +26,7 @@ public class MatchingQueryRepository {
 
     public List<User> findFilter(User loginUser, int pageNumber, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {
         if(gender.equals("all")){
-            return em.createQuery("select u" +
-                                        " from User u" +
+            return em.createQuery("select u from User u" +
                                         " where u<>:user and u.age between :ageMin and :ageMax" +
                                         " and u.home.experience between :experienceMin and :experienceMax", User.class)
                     .setParameter("user",loginUser)
@@ -41,8 +38,7 @@ public class MatchingQueryRepository {
                     .setMaxResults(10)
                     .getResultList();
         }
-        return em.createQuery("select u" +
-                        " from User u" +
+        return em.createQuery("select u from User u" +
                         " where u<>:user and u.age between :ageMin and :ageMax" +
                         " and u.home.experience between :experienceMin and :experienceMax" +
                         " and u.gender=:gender", User.class)

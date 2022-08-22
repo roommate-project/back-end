@@ -26,12 +26,15 @@ public class MatchingService {
     }
 
     public List<MatchingDto> findAllUserPagination(User user, int pageNumber){
-        List<MatchingDto> all = matchingQueryRepository.findAllUserPagination(user, pageNumber);
-        all.forEach((m) -> {
-            m.setLikeNumber(likeRepository.getReceiverCount(m.getUser()));
-            m.setQuestionCount(homeRepository.getQuestionCount(m.getHomeId(),user));
+        List<User> all = matchingQueryRepository.findAllUserPagination(user, pageNumber);
+        List<MatchingDto> allMatch = new ArrayList<>();
+        all.forEach((u) -> {
+            MatchingDto matchingDto = new MatchingDto(imageRepository.getRepresentImage(u).getStoreFileName(),u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId());
+            matchingDto.setLikeNumber(likeRepository.getReceiverCount(matchingDto.getUser()));
+            matchingDto.setQuestionCount(homeRepository.getQuestionCount(matchingDto.getHomeId(),user));
+            allMatch.add(matchingDto);
         });
-        return all;
+        return allMatch;
     }
 
     public List<MatchingDto> findFilterUser(User loginUser, int pageNumber, int rate, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {

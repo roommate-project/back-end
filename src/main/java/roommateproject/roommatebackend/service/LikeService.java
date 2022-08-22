@@ -47,14 +47,12 @@ public class LikeService {
     }
 
     public List<LikeReturnDto> getLikeList(User user, int start) {
-        //List<LikeDto> getLike = likeRepository.getAllLike(user, start);
         List<LikeIt> getLike = likeRepository.getAllLike(user, start);
         List<LikeDto> likeDtos = new ArrayList<>();
         getLike.forEach((l) -> {
             UserImage ui = imageRepository.getRepresentImage(l.getReceiver());
             likeDtos.add(new LikeDto(dir + ui.getStoreFileName(),l.getReceiver(),l.getReceiver().getHome().getId(),l.getReceiver().getHome().getLocation()));
         });
-   //     tmp.forEach(a -> log.info("{}, {}",a.getSender().getEmail(),a.getReceiver().getEmail()));
         likeDtos.forEach((l) -> {
             l.setRepresentImage(dir + l.getRepresentImage());
             l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), l.getUser()));
