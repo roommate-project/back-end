@@ -18,7 +18,6 @@ import roommateproject.roommatebackend.service.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;

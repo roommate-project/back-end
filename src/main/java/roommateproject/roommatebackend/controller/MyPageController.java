@@ -7,10 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import roommateproject.roommatebackend.argumentresolver.Login;
-import roommateproject.roommatebackend.dto.HomeDto;
-import roommateproject.roommatebackend.dto.LikeReturnDto;
-import roommateproject.roommatebackend.dto.UserDto;
-import roommateproject.roommatebackend.dto.UserHomeDto;
+import roommateproject.roommatebackend.dto.*;
 import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
@@ -58,14 +55,27 @@ public class MyPageController {
         this.likeService = likeService;
     }
 
-    @GetMapping("/api/mypage")
-    public UserDto userInfo(@Login User loginUser){
+    @GetMapping("/api/mypage/{pageNumber}")
+    public MypageDto userInfo(@Login User loginUser,
+                              @PathVariable("pageNumber") int pageNumber){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
         UserDto info =  new UserDto(loginUser,userImage,representDir);
         info.setRepresentImage(representDir + info.getRepresentImage());
-        return info;
+        return new MypageDto(info, new UserHomeDto(loginUser.getHome()), likeService.getLikeList(loginUser, pageNumber));
     }
+/*
+    @GetMapping("/api/mypage/info")
+    public UserHomeDto getUserMatchInfo(@Login User loginUser){
 
+        return new UserHomeDto(loginUser.getHome());
+    }
+    @GetMapping("/api/mypage/like/{pageNumber}")
+    public List<LikeReturnDto> getLikeList(@Login User loginUser,
+                                           @PathVariable("pageNumber") int pageNumber){
+
+        return likeService.getLikeList(loginUser, pageNumber);
+    }
+ */
     @PutMapping("/api/mypage")
     public ResponseMessage editUserInfo(@Login User loginUser,
                                         @RequestBody Map<String, String> requestBody){
@@ -92,10 +102,6 @@ public class MyPageController {
         return new HomeDto(loginUser.getHome(),images);
     }
 
-    @GetMapping("/api/mypage/info")
-    public UserHomeDto getUserMatchInfo(@Login User loginUser){
-        return new UserHomeDto(loginUser.getHome());
-    }
 
     @PostMapping("/api/mypage/info")
     public ResponseMessage saveUserHomeInfo(@Login User loginUser,
@@ -158,11 +164,6 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }
 
-    @GetMapping("/api/mypage/like/{pageNumber}")
-    public List<LikeReturnDto> getLikeList(@Login User loginUser,
-                                           @PathVariable("pageNumber") int pageNumber){
 
-        return likeService.getLikeList(loginUser, pageNumber);
-    }
 
 }
