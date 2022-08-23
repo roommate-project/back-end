@@ -18,9 +18,7 @@ import roommateproject.roommatebackend.response.ResponseMessage;
 import roommateproject.roommatebackend.service.HomeService;
 import roommateproject.roommatebackend.service.LikeService;
 import roommateproject.roommatebackend.service.UserService;
-import roommateproject.roommatebackend.token.JwtTokenProvider;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
