@@ -1,6 +1,7 @@
 package roommateproject.roommatebackend.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import roommateproject.roommatebackend.token.JwtTokenProvider;
@@ -24,6 +25,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String reqURI = request.getRequestURI();
         String[] requestToken = null;
+        if(HttpMethod.OPTIONS.equals(request.getMethod())){
+            log.info("OPTIONS 요청 : {}", request.getRequestURI());
+            return true;
+        }
         try{
             requestToken = request.getHeader("authorization").split(" ");
         }catch(NullPointerException e){
