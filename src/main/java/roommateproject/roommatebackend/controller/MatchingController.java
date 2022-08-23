@@ -95,7 +95,7 @@ public class MatchingController {
     @GetMapping("/api/match/info/{userId}")
     public DetailReturnInfoDto getDetailInfo(@PathVariable("userId") Long userId, @Login User loginUser){
         User findUser = userService.find(userId);
-        DetailUserInfo detailUserInfo = new DetailUserInfo(findUser.getName(), findUser.getNickName(), findUser.getAge(), findUser.getHome().getLocation(), findUser.getGender(), findUser.getHome().getExperience());
+        DetailUserInfo detailUserInfo = new DetailUserInfo(findUser.getName(), findUser.getNickName(), findUser.getAge(), findUser.getHome().getLocation(), findUser.getGender(), findUser.getHome().getExperience(), findUser.getHome().getInfo());
 
         UserImage representImage = imageRepository.getRepresentImage(loginUser);
         List<UserImage> restImages = imageRepository.getRestImage(loginUser);

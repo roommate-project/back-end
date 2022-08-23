@@ -12,4 +12,5 @@ public class DetailUserInfo {
     private String address;
     private String gender;
     private int experience;
+    private String info;
 }
