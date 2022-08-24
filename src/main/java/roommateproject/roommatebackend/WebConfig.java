@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor(jwtTokenProvider))
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/","/api/login/**","/api/user/**","/oauth/kakao","/favicon.ico");
+                .excludePathPatterns("/","/api/login/**","/api/user/**","/oauth/kakao","/favicon.ico","/swagger-ui/**" , "/swagger-ui/index.html");
     }
 
     @Override

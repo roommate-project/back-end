@@ -35,17 +35,13 @@ public class MatchingController {
 
     private final MatchingService matchingService;
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final LikeService likeService;
-    private final HomeService homeService;
     private final ImageRepository imageRepository;
 
-    public MatchingController(MatchingService matchingService, UserService userService, JwtTokenProvider jwtTokenProvider, LikeService likeService, HomeService homeService, ImageRepository imageRepository) {
+    public MatchingController(MatchingService matchingService, UserService userService, LikeService likeService, ImageRepository imageRepository) {
         this.matchingService = matchingService;
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.likeService = likeService;
-        this.homeService = homeService;
         this.imageRepository = imageRepository;
     }
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import roommateproject.roommatebackend.dto.EmailValidateDto;
 import roommateproject.roommatebackend.entity.User;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
@@ -64,6 +65,20 @@ public class ResponseMessage {
     }
 
     public ResponseMessage(IllegalArgumentException e) {
+        this.code = HttpStatus.BAD_REQUEST.value();
+        this.status = false;
+        this.message = "에러 : " + e.getMessage();
+        this.timestamp = new Date();
+    }
+
+    public ResponseMessage(NullPointerException e) {
+        this.code = HttpStatus.BAD_REQUEST.value();
+        this.status = false;
+        this.message = "에러 : " + e.getMessage();
+        this.timestamp = new Date();
+    }
+
+    public ResponseMessage(IOException e) {
         this.code = HttpStatus.BAD_REQUEST.value();
         this.status = false;
         this.message = "에러 : " + e.getMessage();

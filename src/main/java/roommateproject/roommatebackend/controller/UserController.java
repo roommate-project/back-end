@@ -16,6 +16,7 @@ import roommateproject.roommatebackend.file.SocialImageStore;
 import roommateproject.roommatebackend.response.ResponseMessage;
 import roommateproject.roommatebackend.service.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import java.io.IOException;
@@ -57,9 +58,11 @@ public class UserController {
     }
 
     @GetMapping("/api/user/validate")
-    public ResponseMessage checkEmail(@RequestParam(value = "email") @Email String requestEmail){
+    public ResponseMessage checkEmail(@RequestParam(value = "email") @Email String requestEmail,
+                                      HttpServletResponse res){
         String randomNumber = mailSender.sendEmail(requestEmail);
         if(randomNumber.equals("fail")){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(new EmailValidateDto(false,"이메일 보내기 불가",HttpStatus.BAD_REQUEST));
         }
         emailCheck.put(requestEmail,randomNumber);
@@ -69,15 +72,18 @@ public class UserController {
 
     @PostMapping("/api/user/validate")
     public ResponseMessage checkEmailCode(@RequestParam(value = "email") @Email String requestEmail,
-                                          @RequestBody HashMap<String, Object> request){
+                                          @RequestBody HashMap<String, Object> request,
+                                          HttpServletResponse res){
 
         String getCode = (String) request.get("emailCode");
         if(checkTime == null || emailCheck == null || checkTime.get(requestEmail) == null || emailCheck.get(requestEmail) == null){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(new EmailValidateDto(false,"이메일 인증 실패 : 잘못된 접근",HttpStatus.BAD_REQUEST));
         }
         long now = new Date().getTime();
         long sendTime = checkTime.get(requestEmail).getTime();
         if(now - sendTime > 10 * 1000 * 60){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(new EmailValidateDto(false,"이메일 인증 실패 : 10분이내 입력", HttpStatus.UNAUTHORIZED));
         }
         if(emailCheck.get(requestEmail).equals(getCode)){
@@ -86,11 +92,13 @@ public class UserController {
             checkTime.remove(requestEmail);
             return new ResponseMessage(new EmailValidateDto(true,"이메일 인증 성공",HttpStatus.OK));
         }
+        res.setStatus(HttpStatus.ACCEPTED.value());
         return new ResponseMessage(new EmailValidateDto(false,"이메일 인증 실패 : 인증코드 불일치",HttpStatus.BAD_REQUEST));
     }
 
     @PostMapping(value = "/api/user/add",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseMessage addUser(@RequestParam(value = "email") @Email String requestEmail,
+    public ResponseMessage addUser(HttpServletResponse res,
+                                   @RequestParam(value = "email") @Email String requestEmail,
                                    @RequestPart(value = "userAddForm") @Valid UserAddForm userAddForm,
                                    @RequestPart MultipartFile representFile,
                                    @RequestPart @Nullable List<MultipartFile> restFiles) throws IOException {
@@ -101,11 +109,13 @@ public class UserController {
 
   */       //이메일 검정 안해도 되도록 해 놓음 -> 나중엔 주석 해제할것
         if(userAddForm.getPassword().length() < 8 || userAddForm.getPassword().length() > 20){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(),false,"비밀번호는 8자 이상 20자 이하",new Date());
         }
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9]*$");
 
         if(!pattern.matcher(userAddForm.getPassword()).matches()){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(),false,"비밀번호는 숫자와 영문자로 구성",new Date());
         }
         User user = new User(requestEmail,userAddForm, "email");
@@ -114,25 +124,30 @@ public class UserController {
         if(emailValidateDto.isValidate()) {
             try {
                 if(representFile.isEmpty() || representFile == null){
+                    res.setStatus(HttpStatus.ACCEPTED.value());
                     return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "대표사진 전송하세요", new Date());
                 }
                 UserImage userImage = representImageStore.storeFile(user,representFile);
                 userService.join(user,userImage);
        //         emailCodeComplete.remove(requestEmail);
             }catch(NoSuchAlgorithmException e){
+                res.setStatus(HttpStatus.ACCEPTED.value());
                 return new ResponseMessage(e);
             }
         }else{
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(emailValidateDto);
         }
         return new ResponseMessage("회원가입 성공");
     }
 
     @GetMapping("/api/user/add/oauth/kakao")
-    public ResponseMessage kakaoAddUser(@RequestParam String code){
+    public ResponseMessage kakaoAddUser(@RequestParam String code,
+                                        HttpServletResponse res){
 
         Map<String, Object> kakaoUser = kakaoOauthService.createKakaoUser(kakaoOauthService.getKakaoAccessToken(code,"http://" + ip + "/api/user/add/oauth/kakao"));
         if(kakaoUser == null){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
         }
         try {
@@ -140,24 +155,29 @@ public class UserController {
             String path = (String) kakaoUser.get("image");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
+                res.setStatus(HttpStatus.ACCEPTED.value());
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
             UserImage userImage = socialImageStore.storeFile(user, path, "KAKAO");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            res.setStatus(HttpStatus.ACCEPTED.value());
+            return new ResponseMessage(e);
         }catch (IOException e){
-            e.printStackTrace();
+            res.setStatus(HttpStatus.ACCEPTED.value());
+            return new ResponseMessage(e);
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "카카오 회원가입 완료", new Date());
     }
 
     @GetMapping("/api/user/add/oauth/naver")
-    public ResponseMessage naverAddUser(@RequestParam String code){
+    public ResponseMessage naverAddUser(@RequestParam String code,
+                                        HttpServletResponse res){
 
         String token = naverOauthService.getNaverAccessToken(code,"http:/" + ip + "/api/user/add/oauth/naver");
         Map<String, Object> naverUser = naverOauthService.createNaverUser(token);
         if(naverUser == null){
+            res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "제대로 정보 동의하세요",new Date());
         }
         try {
@@ -165,6 +185,7 @@ public class UserController {
             String path = (String) naverUser.get("image");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
+                res.setStatus(HttpStatus.ACCEPTED.value());
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
             if(user.getGender().equals("M")){
@@ -175,9 +196,11 @@ public class UserController {
             UserImage userImage = socialImageStore.storeFile(user, path, "NAVER");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            res.setStatus(HttpStatus.ACCEPTED.value());
+            return new ResponseMessage(e);
         }catch (IOException e){
-            e.printStackTrace();
+            res.setStatus(HttpStatus.ACCEPTED.value());
+            return new ResponseMessage(e);
         }
 
         return new ResponseMessage(HttpStatus.OK.value(), true, "네이버 회원가입 완료", new Date());

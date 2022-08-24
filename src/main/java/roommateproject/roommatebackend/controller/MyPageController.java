@@ -19,6 +19,7 @@ import roommateproject.roommatebackend.service.HomeService;
 import roommateproject.roommatebackend.service.LikeService;
 import roommateproject.roommatebackend.service.UserService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -76,11 +77,14 @@ public class MyPageController {
  */
     @PutMapping("/api/mypage")
     public ResponseMessage editUserInfo(@Login User loginUser,
+                                        HttpServletResponse res,
                                         @RequestBody Map<String, String> requestBody){
         User user = null;
         try{
             user = userService.change(loginUser.getId(),requestBody);
-        }catch(NullPointerException | NoSuchAlgorithmException e){
+        }catch(NullPointerException e){
+            e.printStackTrace();
+        }catch (NoSuchAlgorithmException e){
             e.printStackTrace();
         }
         return new ResponseMessage(user);
@@ -161,7 +165,4 @@ public class MyPageController {
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }
-
-
-
 }
