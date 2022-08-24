@@ -25,7 +25,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String reqURI = request.getRequestURI();
         String[] requestToken = null;
-        if(HttpMethod.OPTIONS.equals(request.getMethod())){
+        if(request.getMethod().equals("OPTIONS")){
             log.info("OPTIONS 요청 : {}", request.getRequestURI());
             return true;
         }
