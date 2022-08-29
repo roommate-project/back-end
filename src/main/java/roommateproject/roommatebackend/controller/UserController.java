@@ -53,8 +53,8 @@ public class UserController {
     }
 
     @PostMapping("/api/user/emailValidate")
-    public ResponseMessage emailValidate(@RequestParam("email") String email){
-        return new ResponseMessage(userService.validateEmail(email));
+    public ResponseMessage emailValidate(@RequestBody Map<String, String> request){
+        return new ResponseMessage(userService.validateEmail(request.get("email")));
     }
 
     @GetMapping("/api/user/validate")
