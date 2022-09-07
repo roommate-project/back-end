@@ -115,6 +115,17 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 저장 완료", new Date());
     }
 
+    @PostMapping("/api/mypage/question")
+    public ResponseMessage saveQuestions(@Login User loginUser,
+                                         @RequestBody Map<String, List<Boolean>> questions){
+        List<Boolean> question = questions.get("question");
+        if(question.size() != 6){
+            return new ResponseMessage(HttpStatus.NO_CONTENT.value(), false, "주거성향테스트 개수 오류", new Date());
+        }
+        homeService.saveQuestions(loginUser, question);
+        return new ResponseMessage(HttpStatus.OK.value(), true, "주거성향테스트 저장 완료", new Date());
+    }
+
     @PutMapping("/api/mypage/info")
     public ResponseMessage editUserHomeInfo(@Login User loginUser,
                                             @RequestBody UserHomeDto request){
@@ -132,7 +143,7 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
-    @PutMapping("/api/mypage/image/represent")
+    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRepresentImage(@Login User loginUser,
                                         @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 
@@ -142,7 +153,7 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 대표 사진 수정 완료", new Date());
     }
 
-    @PutMapping("/api/mypage/image/rest")
+    @PutMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRestImage(@Login User loginUser,
                                         @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 

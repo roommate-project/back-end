@@ -7,6 +7,8 @@ import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.repository.HomeRepository;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class HomeService {
@@ -29,5 +31,10 @@ public class HomeService {
 
     public Home find(User user) {
         return homeRepository.find(user);
+    }
+
+    @Transactional
+    public void saveQuestions(User loginUser, List<Boolean> question) {
+        homeRepository.saveQuestions(loginUser, question);
     }
 }
