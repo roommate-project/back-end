@@ -2,9 +2,11 @@ package roommateproject.roommatebackend.dto;
 
 import lombok.Data;
 import roommateproject.roommatebackend.entity.Home;
+import roommateproject.roommatebackend.entity.UserImage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class UserHomeDto {
@@ -19,6 +21,8 @@ public class UserHomeDto {
     private String dormitory;
 
     private List<Boolean> question;
+
+    private List<String> restImages;
  //   private Boolean question1;
    // private Boolean question2;
 //    private Boolean question3;
@@ -27,7 +31,7 @@ public class UserHomeDto {
    // private Boolean question6;
 
     public UserHomeDto(){}
-    public UserHomeDto(Home home){
+    public UserHomeDto(Home home, List<UserImage> restImages, String restDir){
         this.experience = home.getExperience();
         this.want_long = home.getWant_long();
         this.room = home.getRoom();
@@ -43,6 +47,8 @@ public class UserHomeDto {
         this.question.add(home.getQuestion4());
         this.question.add(home.getQuestion5());
         this.question.add(home.getQuestion6());
+        this.restImages = restImages.stream().map(ui -> restDir + ui.getStoreFileName())
+                            .collect(Collectors.toList());
  //       this.question1 = home.getQuestion1();
    //     this.question2 = home.getQuestion2();
      //   this.question3 = home.getQuestion3();

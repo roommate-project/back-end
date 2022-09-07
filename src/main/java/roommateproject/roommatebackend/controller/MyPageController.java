@@ -58,9 +58,10 @@ public class MyPageController {
     public MypageDto userInfo(@Login User loginUser,
                               @PathVariable("pageNumber") int pageNumber){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
+        List<UserImage> restImages = imageRepository.getRestImage(loginUser);
         UserDto info =  new UserDto(loginUser,userImage);
         info.setRepresentImage(representDir + info.getRepresentImage());
-        return new MypageDto(info, new UserHomeDto(loginUser.getHome()), likeService.getLikeList(loginUser, pageNumber));
+        return new MypageDto(info, new UserHomeDto(loginUser.getHome(), restImages, restDir), likeService.getLikeList(loginUser, pageNumber));
     }
 /*
     @GetMapping("/api/mypage/info")
