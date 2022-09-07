@@ -23,6 +23,7 @@ public class UserHomeDto {
     private List<Boolean> question;
 
     private List<String> restImages;
+    private List<Long> restImagesId;
  //   private Boolean question1;
    // private Boolean question2;
 //    private Boolean question3;
@@ -48,6 +49,8 @@ public class UserHomeDto {
         this.question.add(home.getQuestion5());
         this.question.add(home.getQuestion6());
         this.restImages = restImages.stream().map(ui -> restDir + ui.getStoreFileName())
+                            .collect(Collectors.toList());
+        this.restImagesId = restImages.stream().map(ui -> ui.getId())
                             .collect(Collectors.toList());
  //       this.question1 = home.getQuestion1();
    //     this.question2 = home.getQuestion2();

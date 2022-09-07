@@ -24,30 +24,42 @@ public class MatchingQueryRepository {
 
     }
 
-    public List<User> findFilter(User loginUser, int pageNumber, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {
+    public List<User> findFilter(User loginUser, int pageNumber, String gender, int wantLongMax, int wantLongMin, int ageMax, int ageMin, int costMax, int costMin, int roomMax, int roomMin) {
         if(gender.equals("all")){
             return em.createQuery("select u from User u" +
                                         " where u<>:user and u.age between :ageMin and :ageMax" +
-                                        " and u.home.experience between :experienceMin and :experienceMax", User.class)
+                                        " and u.home.want_long between :wantLongMin and :wantLongMax" +
+                                        " and u.home.cost between :costMin and :costMax" +
+                                        " and u.home.room between :roomMin and :roomMax", User.class)
                     .setParameter("user",loginUser)
                     .setParameter("ageMin",ageMin)
                     .setParameter("ageMax",ageMax)
-                    .setParameter("experienceMax",experienceMax)
-                    .setParameter("experienceMin",experienceMin)
+                    .setParameter("wantLongMax",wantLongMax)
+                    .setParameter("wantLongMin",wantLongMin)
+                    .setParameter("costMax",costMax)
+                    .setParameter("costMin",costMin)
+                    .setParameter("roomMax",roomMax)
+                    .setParameter("roomMin",roomMin)
                     .setFirstResult((pageNumber - 1) * 10)
                     .setMaxResults(10)
                     .getResultList();
         }
         return em.createQuery("select u from User u" +
                         " where u<>:user and u.age between :ageMin and :ageMax" +
-                        " and u.home.experience between :experienceMin and :experienceMax" +
+                        " and u.home.want_long between :wantLongMin and :wantLongMax" +
+                        " and u.home.cost between :costMin and :costMax" +
+                        " and u.home.room between :roomMin and :roomMax" +
                         " and u.gender=:gender", User.class)
                 .setParameter("user",loginUser)
                 .setParameter("ageMin",ageMin)
                 .setParameter("ageMax",ageMax)
                 .setParameter("gender",gender)
-                .setParameter("experienceMax",experienceMax)
-                .setParameter("experienceMin",experienceMin)
+                .setParameter("wantLongMax",wantLongMax)
+                .setParameter("wantLongMin",wantLongMin)
+                .setParameter("costMax",costMax)
+                .setParameter("costMin",costMin)
+                .setParameter("roomMax",roomMax)
+                .setParameter("roomMin",roomMin)
                 .setFirstResult((pageNumber - 1) * 10)
                 .setMaxResults(10)
                 .getResultList();

@@ -45,9 +45,8 @@ public class ImageRepository {
     }
 
     @Transactional
-    public void remove(List<UserImage> userImages) {
-        for (UserImage userImage : userImages) {
-            em.remove(userImage);
-        }
+    public void remove(Long id) {
+        UserImage userImage = em.find(UserImage.class, id);
+        em.remove(userImage);
     }
 }

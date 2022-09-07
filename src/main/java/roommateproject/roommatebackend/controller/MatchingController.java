@@ -61,12 +61,16 @@ public class MatchingController {
                               @PathVariable("pageNumber") int pageNumber,
                               @RequestParam(value = "rate",defaultValue = "0") int rate,
                               @RequestParam(value = "gender",defaultValue = "all") String gender,
-                              @RequestParam(value = "wantLongMax",defaultValue = "100") int experienceMax,
-                              @RequestParam(value = "wantLongMin",defaultValue = "0") int experienceMin,
+                              @RequestParam(value = "wantLongMax",defaultValue = "100") int wantLongMax,
+                              @RequestParam(value = "wantLongMin",defaultValue = "0") int wantLongMin,
                               @RequestParam(value = "ageMax",defaultValue = "100") int ageMax,
-                              @RequestParam(value = "ageMin",defaultValue = "0") int ageMin){
+                              @RequestParam(value = "ageMin",defaultValue = "0") int ageMin,
+                              @RequestParam(value = "costMax",defaultValue = "1000000000") int costMax,
+                              @RequestParam(value = "costMin",defaultValue = "0") int costMin,
+                              @RequestParam(value = "roomMax",defaultValue = "100") int roomMax,
+                              @RequestParam(value = "roomMin",defaultValue = "0") int roomMin){
 
-        List<MatchingDto> findAllUsers =  matchingService.findFilterUser(loginUser,pageNumber,rate * 6 / 100,gender,experienceMax,experienceMin,ageMax,ageMin);
+        List<MatchingDto> findAllUsers =  matchingService.findFilterUser(loginUser,pageNumber,rate * 6 / 100,gender,wantLongMax,wantLongMin,ageMax,ageMin,costMax,costMin,roomMax,roomMin);
         findAllUsers.forEach(u -> u.setRepresentImage(representDir + u.getRepresentImage()));
         return findAllUsers
                 .stream().map(m -> new MatchingReturnDto(m))

@@ -42,7 +42,7 @@ public class RestImageStore {
         String storeFileName = createStoreFileName(originalFileName, uuid);
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
 
-        return new UserImage(user, false, originalFileName, storeFileName, false);
+        return new UserImage(user, false, originalFileName, storeFileName);
     }
 
 

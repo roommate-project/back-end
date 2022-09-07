@@ -37,11 +37,11 @@ public class MatchingService {
         return allMatch;
     }
 
-    public List<MatchingDto> findFilterUser(User loginUser, int pageNumber, int rate, String gender, int experienceMax, int experienceMin, int ageMax, int ageMin) {
+    public List<MatchingDto> findFilterUser(User loginUser, int pageNumber, int rate, String gender, int wantLongMax, int wantLongMin, int ageMax, int ageMin, int costMax, int costMin, int roomMax, int roomMin) {
         List<MatchingDto> retFilterUser = new ArrayList<>();
 
         while(retFilterUser.size() < 10){
-            List<User> getInfo = matchingQueryRepository.findFilter(loginUser, pageNumber,gender,experienceMax,experienceMin,ageMax,ageMin);
+            List<User> getInfo = matchingQueryRepository.findFilter(loginUser, pageNumber,gender,wantLongMax,wantLongMin,ageMax,ageMin,costMax,costMin,roomMax,roomMin);
             if(getInfo == null || getInfo.size() == 0){
                 return retFilterUser;
             }

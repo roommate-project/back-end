@@ -156,11 +156,12 @@ public class MyPageController {
 
     @PutMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRestImage(@Login User loginUser,
+                                        @RequestPart @NotBlank ImageEditDto imageEditDto,
                                         @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
 
-        List<UserImage> imageList = imageRepository.getRestImage(loginUser);
-        if(imageList != null) {
-            imageRepository.remove(imageList);
+   //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
+        for(Long id : imageEditDto.getImageId()) {
+            imageRepository.remove(id);
         }
         for (MultipartFile restImage : restImages) {
             UserImage userImage = restImageStore.storeFile(loginUser, restImage);
@@ -170,11 +171,12 @@ public class MyPageController {
     }
 
     @DeleteMapping("/api/mypage/image/rest")
-    public ResponseMessage removeRestImage(@Login User loginUser) {
+    public ResponseMessage removeRestImage(@RequestBody Map<String,Map<String,List<Long>>> imageEditDto) {
 
-        List<UserImage> imageList = imageRepository.getRestImage(loginUser);
-        if(imageList != null) {
-            imageRepository.remove(imageList);
+   //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
+        Map<String, List<Long>> imageId = imageEditDto.get("imageEditDto");
+        for(Long id : imageId.get("imageId")) {
+            imageRepository.remove(id);
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }

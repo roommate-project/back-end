@@ -30,7 +30,7 @@ public class RepresentImageStore {
         String storeFileName = createStoreFileName(originalFileName, uuid);
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
 
-        return new UserImage(user, true, originalFileName, storeFileName, false);
+        return new UserImage(user, true, originalFileName, storeFileName);
     }
 
 
