@@ -51,7 +51,7 @@ public class LikeService {
         List<LikeDto> likeDtos = new ArrayList<>();
         getLike.forEach((l) -> {
             UserImage ui = imageRepository.getRepresentImage(l.getReceiver());
-            likeDtos.add(new LikeDto(dir + ui.getStoreFileName(),l.getReceiver(),l.getReceiver().getHome().getId(),l.getReceiver().getHome().getLocation()));
+            likeDtos.add(new LikeDto(ui.getStoreFileName(),l.getReceiver(),l.getReceiver().getHome().getId(),l.getReceiver().getHome().getLocation()));
         });
         likeDtos.forEach((l) -> {
             l.setRepresentImage(dir + l.getRepresentImage());

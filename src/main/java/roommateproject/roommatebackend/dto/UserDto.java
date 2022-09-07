@@ -15,11 +15,11 @@ public class UserDto {
 
     private String representImage;
 
-    public UserDto(User findUser, UserImage userImage, String representDir) {
+    public UserDto(User findUser, UserImage userImage) {
         this.name = findUser.getName();
         this.nickName = findUser.getNickName();
         this.age = findUser.getAge();
         this.gender = findUser.getGender();
-        this.representImage = representDir + userImage.getStoreFileName();
+        this.representImage = userImage.getStoreFileName();
     }
 }

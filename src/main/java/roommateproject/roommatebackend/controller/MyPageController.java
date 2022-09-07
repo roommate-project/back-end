@@ -58,7 +58,7 @@ public class MyPageController {
     public MypageDto userInfo(@Login User loginUser,
                               @PathVariable("pageNumber") int pageNumber){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
-        UserDto info =  new UserDto(loginUser,userImage,representDir);
+        UserDto info =  new UserDto(loginUser,userImage);
         info.setRepresentImage(representDir + info.getRepresentImage());
         return new MypageDto(info, new UserHomeDto(loginUser.getHome()), likeService.getLikeList(loginUser, pageNumber));
     }
