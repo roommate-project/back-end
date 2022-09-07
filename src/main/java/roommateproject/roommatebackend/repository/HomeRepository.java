@@ -59,4 +59,52 @@ public class HomeRepository {
         findHome.setQuestion6(question.get(5));
         em.merge(findHome);
     }
+
+    public void changeExperience(Home home, Integer experience) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setExperience(experience);
+        em.merge(findHome);
+    }
+
+    public void changeWantLong(Home home, Integer want_long) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setWant_long(want_long);
+        em.merge(findHome);
+    }
+
+    public void changeRoom(Home home, Integer room) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setRoom(room);
+        em.merge(findHome);
+    }
+
+    public void changeCost(Home home, Integer cost) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setCost(cost);
+        em.merge(findHome);
+    }
+
+    public void changeInfo(Home home, String info) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setInfo(info);
+        em.merge(findHome);
+    }
+
+    public void changeHouseInfo(Home home, String houseInfo) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setHouseInfo(houseInfo);
+        em.merge(findHome);
+    }
+
+    public void changeLocation(Home home, String location) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setLocation(location);
+        em.merge(findHome);
+    }
+
+    public void changeDormitory(Home home, String dormitory) {
+        Home findHome = em.find(Home.class, home.getId());
+        findHome.setDormitory(dormitory);
+        em.merge(findHome);
+    }
 }

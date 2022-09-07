@@ -61,8 +61,8 @@ public class MatchingController {
                               @PathVariable("pageNumber") int pageNumber,
                               @RequestParam(value = "rate",defaultValue = "0") int rate,
                               @RequestParam(value = "gender",defaultValue = "all") String gender,
-                              @RequestParam(value = "experienceMax",defaultValue = "100") int experienceMax,
-                              @RequestParam(value = "experienceMin",defaultValue = "0") int experienceMin,
+                              @RequestParam(value = "wantLongMax",defaultValue = "100") int experienceMax,
+                              @RequestParam(value = "wantLongMin",defaultValue = "0") int experienceMin,
                               @RequestParam(value = "ageMax",defaultValue = "100") int ageMax,
                               @RequestParam(value = "ageMin",defaultValue = "0") int ageMin){
 

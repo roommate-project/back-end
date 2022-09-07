@@ -38,7 +38,7 @@ public class SocialImageStore {
         }
 
 
-        return new UserImage(user, true, originalFileName, storeFileName);
+        return new UserImage(user, true, originalFileName, storeFileName, false);
     }
 
 

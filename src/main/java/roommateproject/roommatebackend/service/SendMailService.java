@@ -39,11 +39,13 @@ public class SendMailService {
         try {
             Random random = new Random();
             int randomNumber = random.nextInt(2000000000) % 1000000;
+            String sendRandomNumber = Integer.toString(randomNumber);
+            while(sendRandomNumber.length() < 6)sendRandomNumber += "0";
             Message mimeMessage = new MimeMessage(session);
             mimeMessage.setFrom(new InternetAddress(sendFrom));
             mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(sendTo));
             mimeMessage.setSubject("[roommate] 이메일 확인");
-            mimeMessage.setContent(Integer.toString(randomNumber),"text/html;charset=utf-8");
+            mimeMessage.setContent(sendRandomNumber,"text/html;charset=utf-8");
             Transport.send(mimeMessage);
             return Integer.toString(randomNumber);
         } catch (Exception e){

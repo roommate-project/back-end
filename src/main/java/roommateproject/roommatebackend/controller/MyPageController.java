@@ -128,9 +128,10 @@ public class MyPageController {
 
     @PutMapping("/api/mypage/info")
     public ResponseMessage editUserHomeInfo(@Login User loginUser,
-                                            @RequestBody UserHomeDto request){
+                                            @RequestBody Map<String, Object> request){
+
         Home home = homeService.find(loginUser);
-        homeService.change(loginUser, home, request);
+        homeService.change(home, request);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
     }
 

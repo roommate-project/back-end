@@ -21,12 +21,14 @@ public class UserImage {
     private Boolean represent;
     private String uploadFileName;
     private String storeFileName;
+    private Boolean isErased;
 
-    public UserImage(User user, Boolean represent, String uploadFileName, String storeFileName) {
+    public UserImage(User user, Boolean represent, String uploadFileName, String storeFileName, Boolean isErased) {
         this.user = user;
         this.represent = represent;
         this.uploadFileName = uploadFileName;
         this.storeFileName = storeFileName;
+        this.isErased = isErased;
     }
 
     public UserImage() {
