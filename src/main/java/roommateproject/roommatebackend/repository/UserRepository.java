@@ -41,7 +41,7 @@ public class UserRepository {
         return em.find(User.class, id);
     }
 
-    public User change(long id, String password, String nickName, String name) {
+    public User change(long id, String password, String nickName, String name, int age, String gender) {
         User user = new User();
         User findUser = find(id);
         user.setId(id);
@@ -52,7 +52,21 @@ public class UserRepository {
         user.setPassword(password);
         user.setName(name);
         user.setNickName(nickName);
+        user.setGender(gender);
+        user.setAge(age);
         em.merge(user);
         return user;
+    }
+
+    public void changeAge(User loginUser, String age) {
+        User findUser = em.find(User.class, loginUser.getId());
+        findUser.setAge(Integer.parseInt(age));
+        em.merge(findUser);
+    }
+
+    public void changeGender(User loginUser, String gender) {
+        User findUser = em.find(User.class, loginUser.getId());
+        findUser.setGender(gender);
+        em.merge(findUser);
     }
 }

@@ -76,15 +76,17 @@ public class UserService {
     }
 
     @Transactional
-    public User change(long id, Map<String, String> requestBody) throws NoSuchAlgorithmException {
+    public User change(Long id, Map<String, String> requestBody) throws NoSuchAlgorithmException {
         String password = requestBody.get("password");
         String nickName = requestBody.get("nickName");
         String name = requestBody.get("name");
+        int age = Integer.parseInt(requestBody.get("age"));
+        String gender = requestBody.get("gender");
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.reset();
         md.update(encrypt.getBytes());
         byte[] digested = md.digest(password.getBytes());
         password = String.format("%064x",new BigInteger(1,digested));
-        return userRepository.change(id, password,nickName,name);
+        return userRepository.change(id, password,nickName,name,age,gender);
     }
 }

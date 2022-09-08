@@ -115,6 +115,15 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 저장 완료", new Date());
     }
 
+    @PutMapping("/api/mypage/info")
+    public ResponseMessage editUserHomeInfo(@Login User loginUser,
+                                            @RequestBody Map<String, Object> request){
+
+        Home home = homeService.find(loginUser);
+        homeService.change(loginUser, home, request);
+        return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
+    }
+
     @PostMapping("/api/mypage/question")
     public ResponseMessage saveQuestions(@Login User loginUser,
                                          @RequestBody Map<String, List<Boolean>> questions){
@@ -124,15 +133,6 @@ public class MyPageController {
         }
         homeService.saveQuestions(loginUser, question);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거성향테스트 저장 완료", new Date());
-    }
-
-    @PutMapping("/api/mypage/info")
-    public ResponseMessage editUserHomeInfo(@Login User loginUser,
-                                            @RequestBody Map<String, Object> request){
-
-        Home home = homeService.find(loginUser);
-        homeService.change(home, request);
-        return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
     }
 
     @PostMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

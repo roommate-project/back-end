@@ -60,27 +60,27 @@ public class HomeRepository {
         em.merge(findHome);
     }
 
-    public void changeExperience(Home home, Integer experience) {
+    public void changeExperience(Home home, String experience) {
         Home findHome = em.find(Home.class, home.getId());
-        findHome.setExperience(experience);
+        findHome.setExperience(Integer.parseInt(experience));
         em.merge(findHome);
     }
 
-    public void changeWantLong(Home home, Integer want_long) {
+    public void changeWantLong(Home home, String want_long) {
         Home findHome = em.find(Home.class, home.getId());
-        findHome.setWant_long(want_long);
+        findHome.setWant_long(Integer.parseInt(want_long));
         em.merge(findHome);
     }
 
-    public void changeRoom(Home home, Integer room) {
+    public void changeRoom(Home home, String room) {
         Home findHome = em.find(Home.class, home.getId());
-        findHome.setRoom(room);
+        findHome.setRoom(Integer.parseInt(room));
         em.merge(findHome);
     }
 
-    public void changeCost(Home home, Integer cost) {
+    public void changeCost(Home home, String cost) {
         Home findHome = em.find(Home.class, home.getId());
-        findHome.setCost(cost);
+        findHome.setCost(Integer.parseInt(cost));
         em.merge(findHome);
     }
 

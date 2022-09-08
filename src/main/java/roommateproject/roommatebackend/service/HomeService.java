@@ -2,11 +2,12 @@ package roommateproject.roommatebackend.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import roommateproject.roommatebackend.dto.UserHomeDto;
 import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.repository.HomeRepository;
+import roommateproject.roommatebackend.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +16,11 @@ import java.util.Map;
 public class HomeService {
 
     private final HomeRepository homeRepository;
+    private final UserRepository userRepository;
 
-    public HomeService(HomeRepository homeRepository) {
+    public HomeService(HomeRepository homeRepository, UserRepository userRepository) {
         this.homeRepository = homeRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -26,18 +29,18 @@ public class HomeService {
     }
 
     @Transactional
-    public void change(Home home, Map<String, Object> req){
+    public void change(User loginUser, Home home, Map<String, Object> req){
         if(req.get("experience") != null){
-            homeRepository.changeExperience(home, (Integer) req.get("experience"));
+            homeRepository.changeExperience(home, (String) req.get("experience"));
         }
         if(req.get("want_long") != null){
-            homeRepository.changeWantLong(home, (Integer) req.get("want_long"));
+            homeRepository.changeWantLong(home, (String) req.get("want_long"));
         }
         if(req.get("room") != null){
-            homeRepository.changeRoom(home, (Integer) req.get("room"));
+            homeRepository.changeRoom(home, (String) req.get("room"));
         }
         if(req.get("cost") != null){
-            homeRepository.changeCost(home, (Integer) req.get("cost"));
+            homeRepository.changeCost(home, (String) req.get("cost"));
         }
         if(req.get("info") != null){
             homeRepository.changeInfo(home, (String) req.get("info"));
@@ -50,6 +53,24 @@ public class HomeService {
         }
         if(req.get("dormitory") != null){
             homeRepository.changeDormitory(home, (String) req.get("dormitory"));
+        }
+        if(req.get("age") != null){
+            userRepository.changeAge(loginUser, (String) req.get("age"));
+        }
+        if(req.get("gender") != null){
+            userRepository.changeGender(loginUser, (String) req.get("gender"));
+        }
+        if(req.get("question") != null){
+            List<String> question = (List<String>) req.get("question");
+            List<Boolean> booleanQuestion = new ArrayList<>();
+            for (String q : question){
+                if(q.equals("true")){
+                    booleanQuestion.add(true);
+                }else{
+                    booleanQuestion.add(false);
+                }
+            }
+            homeRepository.saveQuestions(loginUser, booleanQuestion);
         }
     }
 
