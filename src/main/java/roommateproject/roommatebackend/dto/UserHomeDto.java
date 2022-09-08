@@ -21,8 +21,6 @@ public class UserHomeDto {
     private String dormitory;
 
     private List<Boolean> question;
-
-    private List<String> restImages;
     private List<Long> restImagesId;
  //   private Boolean question1;
    // private Boolean question2;
@@ -32,7 +30,7 @@ public class UserHomeDto {
    // private Boolean question6;
 
     public UserHomeDto(){}
-    public UserHomeDto(Home home, List<UserImage> restImages, String restDir){
+    public UserHomeDto(Home home, List<UserImage> restImages){
         this.experience = home.getExperience();
         this.want_long = home.getWant_long();
         this.room = home.getRoom();
@@ -48,8 +46,6 @@ public class UserHomeDto {
         this.question.add(home.getQuestion4());
         this.question.add(home.getQuestion5());
         this.question.add(home.getQuestion6());
-        this.restImages = restImages.stream().map(ui -> restDir + ui.getStoreFileName())
-                            .collect(Collectors.toList());
         this.restImagesId = restImages.stream().map(ui -> ui.getId())
                             .collect(Collectors.toList());
  //       this.question1 = home.getQuestion1();

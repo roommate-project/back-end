@@ -29,7 +29,7 @@ public class MatchingService {
         List<User> all = matchingQueryRepository.findAllUserPagination(user, pageNumber);
         List<MatchingDto> allMatch = new ArrayList<>();
         all.forEach((u) -> {
-            MatchingDto matchingDto = new MatchingDto(imageRepository.getRepresentImage(u).getStoreFileName(),u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId());
+            MatchingDto matchingDto = new MatchingDto(u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId());
             matchingDto.setLikeNumber(likeRepository.getReceiverCount(matchingDto.getUser()));
             matchingDto.setQuestionCount(homeRepository.getQuestionCount(matchingDto.getHomeId(),user));
             allMatch.add(matchingDto);

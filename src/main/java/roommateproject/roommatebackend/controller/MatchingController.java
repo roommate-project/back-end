@@ -50,7 +50,6 @@ public class MatchingController {
                                                @PathVariable("pageNumber") int pageNumber){
 
         List<MatchingDto> findAllUsers =  matchingService.findAllUserPagination(loginUser,pageNumber);
-        findAllUsers.forEach(u -> u.setRepresentImage(representDir + u.getRepresentImage()));
         return findAllUsers
                 .stream().map(m -> new MatchingReturnDto(m))
                 .collect(Collectors.toList());
@@ -71,7 +70,6 @@ public class MatchingController {
                               @RequestParam(value = "roomMin",defaultValue = "0") int roomMin){
 
         List<MatchingDto> findAllUsers =  matchingService.findFilterUser(loginUser,pageNumber,rate * 6 / 100,gender,wantLongMax,wantLongMin,ageMax,ageMin,costMax,costMin,roomMax,roomMin);
-        findAllUsers.forEach(u -> u.setRepresentImage(representDir + u.getRepresentImage()));
         return findAllUsers
                 .stream().map(m -> new MatchingReturnDto(m))
                 .collect(Collectors.toList());
@@ -100,11 +98,8 @@ public class MatchingController {
         UserImage representImage = imageRepository.getRepresentImage(loginUser);
         List<UserImage> restImages = imageRepository.getRestImage(loginUser);
 
-        List<String> allImages = new ArrayList<>();
-        allImages.add(representDir + representImage.getStoreFileName());
-        if(restImages != null && restImages.size() != 0) {
-            restImages.forEach(i -> allImages.add(restDir + i.getStoreFileName()));
-        }
+        List<Long> allImages = new ArrayList<>();
+        allImages.add(representImage.getId());
         DetailHouseInfo detailHouseInfo = new DetailHouseInfo(loginUser.getHome().getRoom(), loginUser.getHome().getCost(), loginUser.getHome().getHouseInfo(), allImages);
 
         return new DetailReturnInfoDto(detailUserInfo,findUser,detailHouseInfo,loginUser);

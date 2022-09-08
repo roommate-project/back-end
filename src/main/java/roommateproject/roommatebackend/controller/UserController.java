@@ -2,6 +2,8 @@ package roommateproject.roommatebackend.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -12,7 +14,9 @@ import roommateproject.roommatebackend.dto.UserAddForm;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.file.RepresentImageStore;
+import roommateproject.roommatebackend.file.RestImageStore;
 import roommateproject.roommatebackend.file.SocialImageStore;
+import roommateproject.roommatebackend.repository.ImageRepository;
 import roommateproject.roommatebackend.response.ResponseMessage;
 import roommateproject.roommatebackend.service.*;
 
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,19 +43,38 @@ public class UserController {
     private final KakaoOauthService kakaoOauthService;
     private final NaverOauthService naverOauthService;
     private final RepresentImageStore representImageStore;
+    private final RestImageStore restImageStore;
+    private final ImageRepository imageRepository;
     private final SocialImageStore socialImageStore;
     private static final Map<String, String> emailCheck = new ConcurrentHashMap<>();
     private static final Map<String, Date> checkTime = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> emailCodeComplete = new ConcurrentHashMap<>();
 
-    public UserController(UserService userService, SendMailService mailSender, KakaoOauthService kakaoOauthService, NaverOauthService naverOauthService, RepresentImageStore representImageStore, SocialImageStore socialImageStore) {
+    public UserController(UserService userService, SendMailService mailSender, KakaoOauthService kakaoOauthService, NaverOauthService naverOauthService, RepresentImageStore representImageStore, RestImageStore restImageStore, ImageRepository imageRepository, SocialImageStore socialImageStore) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.kakaoOauthService = kakaoOauthService;
         this.naverOauthService = naverOauthService;
         this.representImageStore = representImageStore;
+        this.restImageStore = restImageStore;
+        this.imageRepository = imageRepository;
         this.socialImageStore = socialImageStore;
     }
+
+    @ResponseBody
+    @GetMapping(value = "/api/user/{userId}/img/represents", produces = MediaType.IMAGE_JPEG_VALUE)
+    public Resource downloadRepresentImage(@PathVariable Long userId) throws MalformedURLException {
+        return new UrlResource("file:" + representImageStore.getFullPath(imageRepository.getRepresentImage(userService.find(userId)).getStoreFileName()));
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/api/user/{userId}/img/rest/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public Resource downloadRestImage(@PathVariable Long userId,
+                                      @PathVariable Long imageId) throws MalformedURLException {
+
+        return new UrlResource("file:" + restImageStore.getFullPath(imageRepository.getRestImage(userService.find(userId)).stream().filter(i -> i.getId().equals(imageId)).findAny().get().getStoreFileName()));
+    }
+
 
     @PostMapping("/api/user/emailValidate")
     public ResponseMessage emailValidate(@RequestBody Map<String, String> request){

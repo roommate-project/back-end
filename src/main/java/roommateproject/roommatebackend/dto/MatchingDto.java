@@ -10,7 +10,6 @@ public class MatchingDto {
 
     private User user;
     private Long userImageId;
-    private String representImage;
     private String nickName;
     private String info;
     private String location;
@@ -20,8 +19,7 @@ public class MatchingDto {
     private int questionCount;
     private Long homeId;
 
-    public MatchingDto(String representImage, String nickName, String info, String location, String gender, int age, Long homeId, User user, Long userImageId){
-        this.representImage = representImage;
+    public MatchingDto(String nickName, String info, String location, String gender, int age, Long homeId, User user, Long userImageId){
         this.nickName = nickName;
         this.info = info;
         this.location = location;
@@ -33,7 +31,6 @@ public class MatchingDto {
     }
 
     public MatchingDto(User user, Home home, UserImage userImage) {
-        this.representImage = userImage.getStoreFileName();
         this.nickName = user.getNickName();
         this.info = home.getInfo();
         this.location = home.getLocation();

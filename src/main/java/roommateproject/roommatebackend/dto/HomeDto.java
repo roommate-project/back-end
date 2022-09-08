@@ -12,11 +12,11 @@ public class HomeDto {
     private Integer cost;
     private Integer room;
     private String houseInfo;
-    private List<String> images;
+    private List<Long> images;
 
     public HomeDto(){}
 
-    public HomeDto(Home home, List<String> images) {
+    public HomeDto(Home home, List<Long> images) {
         this.dormitory = home.getDormitory();
         this.cost = home.getCost();
         this.room = home.getRoom();

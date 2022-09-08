@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class MatchingReturnDto {
-    private String representImage;
     private String nickName;
     private String info;
     private String location;
@@ -15,7 +14,6 @@ public class MatchingReturnDto {
     private Long userId;
 
     public MatchingReturnDto(MatchingDto matchingDto){
-        this.representImage = matchingDto.getRepresentImage();
         this.nickName = matchingDto.getNickName();
         this.info = matchingDto.getInfo();
         this.location = matchingDto.getLocation();

@@ -54,14 +54,15 @@ public class MyPageController {
         this.likeService = likeService;
     }
 
+
     @GetMapping("/api/mypage/{pageNumber}")
     public MypageDto userInfo(@Login User loginUser,
                               @PathVariable("pageNumber") int pageNumber){
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
         List<UserImage> restImages = imageRepository.getRestImage(loginUser);
         UserDto info =  new UserDto(loginUser,userImage);
-        info.setRepresentImage(representDir + info.getRepresentImage());
-        return new MypageDto(info, new UserHomeDto(loginUser.getHome(), restImages, restDir), likeService.getLikeList(loginUser, pageNumber));
+  //      info.setRepresentImage(representDir + info.getRepresentImage());
+        return new MypageDto(info, new UserHomeDto(loginUser.getHome(), restImages), likeService.getLikeList(loginUser, pageNumber));
     }
 /*
     @GetMapping("/api/mypage/info")
@@ -112,8 +113,8 @@ public class MyPageController {
 
     @GetMapping("/api/mypage/home")
     public HomeDto getHomeInfo(@Login User loginUser){
-        List<String> images = imageRepository.getRestImage(loginUser)
-                .stream().map(i -> restDir + i.getStoreFileName())
+        List<Long> images = imageRepository.getRestImage(loginUser)
+                .stream().map(i -> i.getId())
                 .collect(Collectors.toList());
         return new HomeDto(loginUser.getHome(),images);
     }

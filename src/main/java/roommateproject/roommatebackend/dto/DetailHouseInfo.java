@@ -10,9 +10,9 @@ public class DetailHouseInfo {
     private int room;
     private Integer cost;
     private String houseInfo;
-    private List<String> photoUrls;
+    private List<Long> photoUrls;
 
-    public DetailHouseInfo(Integer room, Integer cost, String houseInfo, List<String> photoUrls) {
+    public DetailHouseInfo(Integer room, Integer cost, String houseInfo, List<Long> photoUrls) {
         this.room = room;
         if(room == 0){
             this.cost = null;

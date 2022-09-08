@@ -8,18 +8,20 @@ import roommateproject.roommatebackend.entity.UserImage;
 @Data
 public class UserDto {
 
+    private Long userId;
     private String nickName;
     private String name;
     private int age;
     private String gender;
 
-    private String representImage;
+    private Long representImageId;
 
     public UserDto(User findUser, UserImage userImage) {
+        this.userId = findUser.getId();
         this.name = findUser.getName();
         this.nickName = findUser.getNickName();
         this.age = findUser.getAge();
         this.gender = findUser.getGender();
-        this.representImage = userImage.getStoreFileName();
+        this.representImageId = userImage.getId();
     }
 }
