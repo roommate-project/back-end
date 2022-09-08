@@ -72,6 +72,15 @@ public class HomeService {
             }
             homeRepository.saveQuestions(loginUser, booleanQuestion);
         }
+        if(req.get("nickName") != null){
+            userRepository.changeNickName(loginUser, (String) req.get("nickName"));
+        }
+        if(req.get("name") != null){
+            userRepository.changeName(loginUser, (String) req.get("name"));
+        }
+        if(req.get("password") != null){
+            userRepository.changePassword(loginUser, (String) req.get("password"));
+        }
     }
 
     public Home find(User user) {

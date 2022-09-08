@@ -79,17 +79,30 @@ public class MyPageController {
     @PutMapping("/api/mypage")
     public ResponseMessage editUserInfo(@Login User loginUser,
                                         HttpServletResponse res,
-                                        @RequestBody Map<String, String> requestBody){
+                                        @RequestBody Map<String, Object> request){
+   /*
         User user = null;
         try{
-            user = userService.change(loginUser.getId(),requestBody);
+            user = userService.change(loginUser,requestBody);
         }catch(NullPointerException e){
             e.printStackTrace();
         }catch (NoSuchAlgorithmException e){
             e.printStackTrace();
         }
-        return new ResponseMessage(user);
+    */
+        homeService.change(loginUser, loginUser.getHome(), request);
+        return new ResponseMessage(HttpStatus.OK.value(), true, "수정 완료", new Date());
     }
+/*
+    @PutMapping("/api/mypage/info")
+    public ResponseMessage editUserHomeInfo(@Login User loginUser,
+                                            @RequestBody Map<String, Object> request){
+
+  //      Home home = homeService.find(loginUser);
+  //      homeService.change(loginUser, home, request);
+        return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
+    }
+ */
 
     @GetMapping("/api/mypage/drop")
     public ResponseMessage eraseUser(@Login User loginUser){
@@ -113,15 +126,6 @@ public class MyPageController {
         Home home = new Home(loginUser, request);
         homeService.save(home);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 저장 완료", new Date());
-    }
-
-    @PutMapping("/api/mypage/info")
-    public ResponseMessage editUserHomeInfo(@Login User loginUser,
-                                            @RequestBody Map<String, Object> request){
-
-        Home home = homeService.find(loginUser);
-        homeService.change(loginUser, home, request);
-        return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 수정 완료", new Date());
     }
 
     @PostMapping("/api/mypage/question")

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import roommateproject.roommatebackend.dto.EmailValidateDto;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
+import roommateproject.roommatebackend.repository.HomeRepository;
 import roommateproject.roommatebackend.repository.UserRepository;
 
 import java.math.BigInteger;
@@ -22,13 +23,15 @@ import java.util.regex.Pattern;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final HomeRepository homeRepository;
 
     @Value("${spring.encrypt.password}")
     private String encrypt;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, HomeRepository homeRepository){
         this.userRepository = userRepository;
+        this.homeRepository = homeRepository;
     }
 
     @Transactional
@@ -76,10 +79,11 @@ public class UserService {
     }
 
     @Transactional
-    public User change(Long id, Map<String, String> requestBody) throws NoSuchAlgorithmException {
+    public User change(User loginUser, Map<String, String> requestBody) throws NoSuchAlgorithmException {
         String password = requestBody.get("password");
         String nickName = requestBody.get("nickName");
         String name = requestBody.get("name");
+        String location = requestBody.get("location");
         int age = Integer.parseInt(requestBody.get("age"));
         String gender = requestBody.get("gender");
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -87,6 +91,8 @@ public class UserService {
         md.update(encrypt.getBytes());
         byte[] digested = md.digest(password.getBytes());
         password = String.format("%064x",new BigInteger(1,digested));
-        return userRepository.change(id, password,nickName,name,age,gender);
+
+        homeRepository.changeLocation(loginUser.getHome(),location);
+        return userRepository.change(loginUser.getId(), password,nickName,name,age,gender);
     }
 }
