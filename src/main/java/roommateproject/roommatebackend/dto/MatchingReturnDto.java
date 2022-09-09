@@ -13,6 +13,7 @@ public class MatchingReturnDto {
     private int questionCount;
     private Long userId;
     private Boolean isLiked;
+    private Boolean isLast;
 
     public MatchingReturnDto(MatchingDto matchingDto){
         this.nickName = matchingDto.getNickName();

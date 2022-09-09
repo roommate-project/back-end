@@ -50,9 +50,18 @@ public class MatchingController {
                                                @PathVariable("pageNumber") int pageNumber){
 
         List<MatchingDto> findAllUsers =  matchingService.findAllUserPagination(loginUser,pageNumber);
-        return findAllUsers
-                .stream().map(m -> new MatchingReturnDto(m))
-                .collect(Collectors.toList());
+        List<MatchingReturnDto> returnDtos = findAllUsers
+                                                .stream().map(m -> new MatchingReturnDto(m))
+                                                .collect(Collectors.toList());
+        returnDtos.forEach((m) -> {
+            if(returnDtos.indexOf(m) == returnDtos.size() - 1){
+                m.setIsLast(true);
+            }else{
+                m.setIsLast(false);
+            }
+        });
+
+        return returnDtos;
     }
 
     @GetMapping("/api/match/filter/{pageNumber}")
