@@ -12,6 +12,7 @@ public class MatchingReturnDto {
     private int likeNumber;
     private int questionCount;
     private Long userId;
+    private Boolean isLiked;
 
     public MatchingReturnDto(MatchingDto matchingDto){
         this.nickName = matchingDto.getNickName();
@@ -22,6 +23,7 @@ public class MatchingReturnDto {
         this.likeNumber = matchingDto.getLikeNumber();
         this.questionCount = matchingDto.getQuestionCount();
         this.userId = matchingDto.getUser().getId();
+        this.isLiked = matchingDto.getIsLiked();
     }
 
 }

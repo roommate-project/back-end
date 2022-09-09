@@ -18,8 +18,9 @@ public class MatchingDto {
     private int likeNumber;
     private int questionCount;
     private Long homeId;
+    private Boolean isLiked;
 
-    public MatchingDto(String nickName, String info, String location, String gender, int age, Long homeId, User user, Long userImageId){
+    public MatchingDto(String nickName, String info, String location, String gender, int age, Long homeId, User user, Long userImageId, Boolean isLiked){
         this.nickName = nickName;
         this.info = info;
         this.location = location;
@@ -28,6 +29,7 @@ public class MatchingDto {
         this.homeId = homeId;
         this.user = user;
         this.userImageId = userImageId;
+        this.isLiked = isLiked;
     }
 
     public MatchingDto(User user, Home home, UserImage userImage) {

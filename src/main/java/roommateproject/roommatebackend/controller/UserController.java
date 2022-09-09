@@ -162,7 +162,7 @@ public class UserController {
             res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(emailValidateDto);
         }
-        return new ResponseMessage("회원가입 성공");
+        return new ResponseMessage("회원가입 성공", user.getId());
     }
 
     @GetMapping("/api/user/add/oauth/kakao")

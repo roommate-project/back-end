@@ -17,15 +17,17 @@ public class ResponseMessage {
     private boolean status;
     private String message;
     private Date timestamp;
+    private Long id;
 
     public ResponseMessage(){
     }
 
-    public ResponseMessage(String token) {
+    public ResponseMessage(String token, Long id) {
         this.code = HttpStatus.OK.value();
         this.status = true;
         this.message = token;
         this.timestamp = new Date();
+        this.id = id;
     }
 
     public ResponseMessage(int code, boolean status, String message, Date timestamp){

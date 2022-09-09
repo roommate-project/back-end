@@ -3,12 +3,14 @@ package roommateproject.roommatebackend.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import roommateproject.roommatebackend.dto.MatchingDto;
+import roommateproject.roommatebackend.entity.LikeIt;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
 import roommateproject.roommatebackend.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service @Slf4j
 public class MatchingService {
@@ -29,7 +31,9 @@ public class MatchingService {
         List<User> all = matchingQueryRepository.findAllUserPagination(user, pageNumber);
         List<MatchingDto> allMatch = new ArrayList<>();
         all.forEach((u) -> {
-            MatchingDto matchingDto = new MatchingDto(u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId());
+            Optional<LikeIt> like = likeRepository.checkLike(user, u);
+            Boolean checkLike = like.isPresent();
+            MatchingDto matchingDto = new MatchingDto(u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId(),checkLike);
             matchingDto.setLikeNumber(likeRepository.getReceiverCount(matchingDto.getUser()));
             matchingDto.setQuestionCount(homeRepository.getQuestionCount(matchingDto.getHomeId(),user));
             allMatch.add(matchingDto);

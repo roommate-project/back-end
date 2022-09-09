@@ -51,7 +51,7 @@ public class LoginController {
             return new ResponseMessage(e);
         }
         if(id != null){
-            return new ResponseMessage(tokenProvider.createToken(id, requestEmail));
+            return new ResponseMessage(tokenProvider.createToken(id, requestEmail), id);
         }
         res.setStatus(HttpStatus.ACCEPTED.value());
         return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "로그인 불가", new Date());
@@ -73,7 +73,7 @@ public class LoginController {
             res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(e);
         }
-        return new ResponseMessage(tokenProvider.createToken(id, kakaoEmail));
+        return new ResponseMessage(tokenProvider.createToken(id, kakaoEmail), id);
     }
 
     @GetMapping("/api/login/oauth/naver")
@@ -92,6 +92,6 @@ public class LoginController {
             res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(e);
         }
-        return new ResponseMessage(tokenProvider.createToken(id, naverEmail));
+        return new ResponseMessage(tokenProvider.createToken(id, naverEmail), id);
     }
 }

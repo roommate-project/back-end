@@ -2,13 +2,13 @@ package roommateproject.roommatebackend.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import roommateproject.roommatebackend.dto.LikeDto;
 import roommateproject.roommatebackend.entity.LikeIt;
 import roommateproject.roommatebackend.entity.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository @Slf4j
 public class LikeRepository {
@@ -54,5 +54,12 @@ public class LikeRepository {
                 .setFirstResult((start - 1) * 10)
                 .setMaxResults(10)
                 .getResultList();
+    }
+
+    public Optional<LikeIt> checkLike(User user, User u) {
+        return em.createQuery("select l from LikeIt l where l.sender.id = :sender and l.receiver.id = :receiver",LikeIt.class)
+                .setParameter("sender", user.getId())
+                .setParameter("receiver", u.getId())
+                .getResultList().stream().findAny();
     }
 }
