@@ -54,7 +54,7 @@ public class MatchingController {
                                                 .stream().map(m -> new MatchingReturnDto(m))
                                                 .collect(Collectors.toList());
         returnDtos.forEach((m) -> {
-            if(returnDtos.indexOf(m) == returnDtos.size() - 1){
+            if(returnDtos.indexOf(m) == 0){
                 m.setIsLast(true);
             }else{
                 m.setIsLast(false);
