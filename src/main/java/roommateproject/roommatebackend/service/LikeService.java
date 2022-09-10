@@ -55,7 +55,7 @@ public class LikeService {
         });
         likeDtos.forEach((l) -> {
             l.setRepresentImage(dir + l.getRepresentImage());
-            l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), l.getUser()));
+            l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), user));
         });
         List<LikeReturnDto> returnDtos = likeDtos.stream().map(l -> new LikeReturnDto(l))
                                                 .collect(Collectors.toList());

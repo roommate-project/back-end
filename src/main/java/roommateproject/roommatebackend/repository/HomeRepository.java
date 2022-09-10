@@ -38,12 +38,12 @@ public class HomeRepository {
         Home userHome = em.createQuery("select h from Home h where h.user=:user",Home.class)
                                     .setParameter("user",user)
                                     .getSingleResult();
-        if(findHome.getQuestion1() && userHome.getQuestion1())questionCount++;
-        if(findHome.getQuestion2() && userHome.getQuestion2())questionCount++;
-        if(findHome.getQuestion3() && userHome.getQuestion3())questionCount++;
-        if(findHome.getQuestion4() && userHome.getQuestion4())questionCount++;
-        if(findHome.getQuestion5() && userHome.getQuestion5())questionCount++;
-        if(findHome.getQuestion6() && userHome.getQuestion6())questionCount++;
+        if(findHome.getQuestion1() == userHome.getQuestion1())questionCount++;
+        if(findHome.getQuestion2() == userHome.getQuestion2())questionCount++;
+        if(findHome.getQuestion3() == userHome.getQuestion3())questionCount++;
+        if(findHome.getQuestion4() == userHome.getQuestion4())questionCount++;
+        if(findHome.getQuestion5() == userHome.getQuestion5())questionCount++;
+        if(findHome.getQuestion6() == userHome.getQuestion6())questionCount++;
         return questionCount;
     }
 
