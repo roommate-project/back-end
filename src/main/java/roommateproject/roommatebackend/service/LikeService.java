@@ -57,7 +57,16 @@ public class LikeService {
             l.setRepresentImage(dir + l.getRepresentImage());
             l.setQuestionNumber(homeRepository.getQuestionCount(l.getHomeId(), l.getUser()));
         });
-        return likeDtos.stream().map(l -> new LikeReturnDto(l))
-                .collect(Collectors.toList());
+        List<LikeReturnDto> returnDtos = likeDtos.stream().map(l -> new LikeReturnDto(l))
+                                                .collect(Collectors.toList());
+        returnDtos.forEach((l) -> {
+            l.setFirstHomeImageId(imageRepository.getFirstRestImage(l.getUserId()));
+            if(returnDtos.indexOf(l) == 0){
+                l.setIsLast(true);
+            }else{
+                l.setIsLast(false);
+            }
+        });
+        return returnDtos;
     }
 }

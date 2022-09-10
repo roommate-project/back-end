@@ -49,4 +49,12 @@ public class ImageRepository {
         UserImage userImage = em.find(UserImage.class, id);
         em.remove(userImage);
     }
+
+    public Long getFirstRestImage(Long userId) {
+        return em.createQuery("select ui from UserImage ui where ui.user.id = :id " +
+                        "and ui.represent = false" +
+                        " order by ui.id",UserImage.class)
+                .setParameter("id",userId).getResultList()
+                .get(0).getId();
+    }
 }

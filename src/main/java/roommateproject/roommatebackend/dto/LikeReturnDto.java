@@ -9,6 +9,8 @@ public class LikeReturnDto {
     private int want_long;
     private double questionPercent;
     private Long userId;
+    private Long firstHomeImageId;
+    private Boolean isLast;
 
     public LikeReturnDto(LikeDto likeDto){
         this.location = likeDto.getLocation();
