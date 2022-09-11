@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import roommateproject.roommatebackend.argumentresolver.Login;
@@ -162,19 +163,21 @@ public class MyPageController {
     @PutMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRestImage(@Login User loginUser,
                                         @RequestPart @NotBlank ImageEditDto imageEditDto,
-                                        @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
+                                        @RequestPart @Nullable List<MultipartFile> restImages) throws IOException {
 
    //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
         for(Long id : imageEditDto.getImageId()) {
             imageRepository.remove(id);
         }
-        for (MultipartFile restImage : restImages) {
-            UserImage userImage = restImageStore.storeFile(loginUser, restImage);
-            imageRepository.save(userImage);
+        if(restImages != null) {
+            for (MultipartFile restImage : restImages) {
+                UserImage userImage = restImageStore.storeFile(loginUser, restImage);
+                imageRepository.save(userImage);
+            }
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 수정 완료", new Date());
     }
-
+/*
     @DeleteMapping("/api/mypage/image/rest")
     public ResponseMessage removeRestImage(@RequestBody Map<String,Map<String,List<Long>>> imageEditDto) {
 
@@ -185,4 +188,6 @@ public class MyPageController {
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }
+    
+ */
 }
