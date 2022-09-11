@@ -188,6 +188,6 @@ public class MyPageController {
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }
-    
+
  */
 }
