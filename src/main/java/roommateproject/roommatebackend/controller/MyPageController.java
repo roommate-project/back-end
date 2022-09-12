@@ -177,17 +177,14 @@ public class MyPageController {
         }
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 수정 완료", new Date());
     }
-/*
-    @DeleteMapping("/api/mypage/image/rest")
-    public ResponseMessage removeRestImage(@RequestBody Map<String,Map<String,List<Long>>> imageEditDto) {
+
+    @DeleteMapping("/api/mypage/image/rest/{id}")
+    public ResponseMessage removeRestImage(@PathVariable("id") Long id) {
 
    //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
-        Map<String, List<Long>> imageId = imageEditDto.get("imageEditDto");
-        for(Long id : imageId.get("imageId")) {
-            imageRepository.remove(id);
-        }
+        imageRepository.remove(id);
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }
 
- */
+
 }
