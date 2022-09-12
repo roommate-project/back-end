@@ -23,7 +23,7 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public Long login(String email, String password) throws NoSuchAlgorithmException {
+    public User login(String email, String password) throws NoSuchAlgorithmException {
 
         if(email == null){
             throw new IllegalArgumentException("이메일 항목이 없음");
@@ -44,7 +44,7 @@ public class LoginService {
         if(!encryptPassword.equals(findUser.getPassword())){
             throw new IllegalArgumentException("비밀번호 불일치");
         }
-        return findUser.getId();
+        return findUser;
     }
 
     public Long kakaoLogin(String email){

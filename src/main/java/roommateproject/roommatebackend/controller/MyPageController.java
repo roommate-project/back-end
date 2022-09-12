@@ -150,7 +150,7 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
-    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRepresentImage(@Login User loginUser,
                                         @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 

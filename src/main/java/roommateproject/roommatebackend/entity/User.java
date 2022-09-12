@@ -36,7 +36,6 @@ public class User {
     @OneToMany(mappedBy = "receiver",cascade = CascadeType.ALL)
     private List<LikeIt> likeReceiver;
 
-
     public User(){}
 
     public User(String email, String name, String password, String nickName, String gender, String register, int age){
