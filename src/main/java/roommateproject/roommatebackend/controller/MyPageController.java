@@ -143,14 +143,14 @@ public class MyPageController {
 
     @PostMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage addRestImage(@Login User loginUser,
-                                        @RequestPart @NotBlank List<MultipartFile> restImages) throws IOException {
+                                        @RequestPart @NotBlank MultipartFile restImages) throws IOException {
 
-        restImageStore.storeFiles(loginUser,restImages).forEach(i -> imageRepository.save(i));
-
+//        restImageStore.storeFiles(loginUser,restImages).forEach(i -> imageRepository.save(i));
+        imageRepository.save(restImageStore.storeFile(loginUser, restImages));
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
-    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRepresentImage(@Login User loginUser,
                                         @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 
