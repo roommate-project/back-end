@@ -529,7 +529,7 @@ public class MatchingQueryRepository {
                             .setFirstResult((pageNumber - 1) * 10)
                             .setMaxResults(10)
                             .getResultList();           //all X, room0 X
-                    
+
                 }
             }
         }
