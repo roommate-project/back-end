@@ -75,11 +75,11 @@ public class MatchingController {
                               @RequestParam(value = "ageMin",defaultValue = "0") int ageMin,
                               @RequestParam(value = "costMax",defaultValue = "1000000000") int costMax,
                               @RequestParam(value = "costMin",defaultValue = "0") int costMin,
-                              @RequestParam(value = "room0", defaultValue = "false") Boolean room0,
-                              @RequestParam(value = "room1", defaultValue = "false") Boolean room1,
-                              @RequestParam(value = "room2", defaultValue = "false") Boolean room2,
-                              @RequestParam(value = "room3", defaultValue = "false") Boolean room3,
-                              @RequestParam(value = "room4", defaultValue = "false") Boolean room4){
+                              @RequestParam(value = "room0", defaultValue = "true") Boolean room0,
+                              @RequestParam(value = "room1", defaultValue = "true") Boolean room1,
+                              @RequestParam(value = "room2", defaultValue = "true") Boolean room2,
+                              @RequestParam(value = "room3", defaultValue = "true") Boolean room3,
+                              @RequestParam(value = "room4", defaultValue = "true") Boolean room4){
 
         List<MatchingDto> findAllUsers =  matchingService.findFilterUser(loginUser,pageNumber,rate * 6 / 100,gender,wantLongMax,wantLongMin,ageMax,ageMin,costMax,costMin,room0,room1,room2,room3,room4);
         return findAllUsers
