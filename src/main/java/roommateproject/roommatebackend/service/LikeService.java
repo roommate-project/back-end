@@ -15,6 +15,7 @@ import roommateproject.roommatebackend.repository.LikeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,5 +69,9 @@ public class LikeService {
             }
         });
         return returnDtos;
+    }
+
+    public Boolean isLiked(User loginUser, User user) {
+        return likeRepository.findByUser(loginUser, user).isPresent();
     }
 }

@@ -82,9 +82,19 @@ public class MatchingController {
                               @RequestParam(value = "room4", defaultValue = "true") Boolean room4){
 
         List<MatchingDto> findAllUsers =  matchingService.findFilterUser(loginUser,pageNumber,rate * 6 / 100,gender,wantLongMax,wantLongMin,ageMax,ageMin,costMax,costMin,room0,room1,room2,room3,room4);
-        return findAllUsers
-                .stream().map(m -> new MatchingReturnDto(m))
-                .collect(Collectors.toList());
+        findAllUsers.forEach(m -> m.setIsLiked(likeService.isLiked(loginUser, m.getUser())));
+
+        List<MatchingReturnDto> returnDtos = findAllUsers.stream()
+                                .map(m -> new MatchingReturnDto(m)).collect(Collectors.toList());
+        returnDtos.forEach((m) -> {
+            if(returnDtos.indexOf(m) == 0){
+                m.setIsLast(true);
+            }else{
+                m.setIsLast(false);
+            }
+        });
+
+        return returnDtos;
     }
 
     @PostMapping("/api/match/like")
@@ -108,7 +118,7 @@ public class MatchingController {
         DetailUserInfo detailUserInfo = new DetailUserInfo(findUser.getName(), findUser.getNickName(), findUser.getAge(), findUser.getHome().getLocation(), findUser.getGender(), findUser.getHome().getExperience(), findUser.getHome().getInfo());
 
         UserImage representImage = imageRepository.getRepresentImage(findUser);
-        List<UserImage> restImages = imageRepository.getRestImage(findUser);
+       // List<UserImage> restImages = imageRepository.getRestImage(findUser);
 
         List<Long> allImages = new ArrayList<>();
         allImages.add(representImage.getId());

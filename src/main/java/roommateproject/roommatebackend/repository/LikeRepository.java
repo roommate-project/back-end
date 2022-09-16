@@ -62,4 +62,11 @@ public class LikeRepository {
                 .setParameter("receiver", u.getId())
                 .getResultList().stream().findAny();
     }
+
+    public Optional<LikeIt> findByUser(User loginUser, User user) {
+        return em.createQuery("select l from LikeIt l where l.sender.id = :sender and l.receiver.id = :receiver",LikeIt.class)
+                .setParameter("sender",loginUser.getId())
+                .setParameter("receiver",user.getId())
+                .getResultList().stream().findAny();
+    }
 }

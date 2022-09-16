@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import roommateproject.roommatebackend.entity.User;
 
@@ -7,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
+@Repository @Slf4j
 public class MatchingQueryRepository {
 
     @PersistenceContext
@@ -24,6 +25,7 @@ public class MatchingQueryRepository {
     }
 
     public List<User> findFilter(User loginUser, int pageNumber, String gender, int wantLongMax, int wantLongMin, int ageMax, int ageMin, int costMax, int costMin, boolean room0,boolean room1,boolean room2,boolean room3,boolean room4) {
+        log.info("{} {} {} {}",room0, room1,room2,room3,room4);
         if(gender.equals("all")){
             if(room4){
                 return em.createQuery("select u from User u" +
