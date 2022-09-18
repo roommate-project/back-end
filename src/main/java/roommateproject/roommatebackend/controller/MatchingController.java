@@ -118,10 +118,11 @@ public class MatchingController {
         DetailUserInfo detailUserInfo = new DetailUserInfo(findUser.getName(), findUser.getNickName(), findUser.getAge(), findUser.getHome().getLocation(), findUser.getGender(), findUser.getHome().getExperience(), findUser.getHome().getInfo());
 
         UserImage representImage = imageRepository.getRepresentImage(findUser);
-       // List<UserImage> restImages = imageRepository.getRestImage(findUser);
+        List<UserImage> restImages = imageRepository.getRestImage(findUser);
 
         List<Long> allImages = new ArrayList<>();
         allImages.add(representImage.getId());
+        restImages.forEach(i -> allImages.add(i.getId()));
         DetailHouseInfo detailHouseInfo = new DetailHouseInfo(loginUser.getHome().getRoom(), loginUser.getHome().getCost(), loginUser.getHome().getHouseInfo(), allImages);
 
         return new DetailReturnInfoDto(detailUserInfo,findUser,detailHouseInfo,loginUser);
