@@ -15,7 +15,6 @@ import roommateproject.roommatebackend.repository.LikeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +27,13 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final ImageRepository imageRepository;
     private final HomeRepository homeRepository;
+    private final UserService userService;
 
-    public LikeService(LikeRepository likeRepository, ImageRepository imageRepository, HomeRepository homeRepository) {
+    public LikeService(LikeRepository likeRepository, ImageRepository imageRepository, HomeRepository homeRepository, UserService userService) {
         this.likeRepository = likeRepository;
         this.imageRepository = imageRepository;
         this.homeRepository = homeRepository;
+        this.userService = userService;
     }
 
     @Transactional
@@ -61,13 +62,16 @@ public class LikeService {
         List<LikeReturnDto> returnDtos = likeDtos.stream().map(l -> new LikeReturnDto(l))
                                                 .collect(Collectors.toList());
         returnDtos.forEach((l) -> {
-            l.setFirstHomeImageId(imageRepository.getFirstRestImage(l.getUserId()));
+            l.setUserImageId(imageRepository.getRepresentImage(userService.find(l.getUserId())).getId());
+     //       l.setFirstHomeImageId(imageRepository.getFirstRestImage(l.getUserId()));
             if(returnDtos.indexOf(l) == 0){
                 l.setIsLast(true);
             }else{
                 l.setIsLast(false);
             }
         });
+
+
         return returnDtos;
     }
 
