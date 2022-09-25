@@ -17,7 +17,10 @@ public class RepresentImageStore {
     private String fileDir;
 
     public String getFullPath(String filename){
-        return fileDir + filename;
+        if(filename.contains(".jpg") || filename.contains(".bmp")){
+            return fileDir + filename;
+        }
+        return fileDir + filename + ".jpg";
     }
 
     public UserImage storeFile(User user, MultipartFile multipartFile) throws IOException {

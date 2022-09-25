@@ -64,6 +64,7 @@ public class UserController {
     @ResponseBody
     @GetMapping(value = "/api/user/{userId}/img/represents", produces = MediaType.IMAGE_JPEG_VALUE)
     public Resource downloadRepresentImage(@PathVariable Long userId) throws MalformedURLException {
+     //   log.info("image : {}",representImageStore.getFullPath(imageRepository.getRepresentImage(userService.find(userId)).getStoreFileName()));
         return new UrlResource("file:" + representImageStore.getFullPath(imageRepository.getRepresentImage(userService.find(userId)).getStoreFileName()));
     }
 
@@ -177,13 +178,12 @@ public class UserController {
         try {
             User user = (User) kakaoUser.get("user");
             String path = (String) kakaoUser.get("image");
-            String[] splitImageName = path.split(".");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 res.setStatus(HttpStatus.ACCEPTED.value());
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            UserImage userImage = socialImageStore.storeFile(user, splitImageName[0] + ".jpg", "KAKAO");
+            UserImage userImage = socialImageStore.storeFile(user, path, "KAKAO");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             res.setStatus(HttpStatus.ACCEPTED.value());
@@ -208,7 +208,6 @@ public class UserController {
         try {
             User user = (User) naverUser.get("user");
             String path = (String) naverUser.get("image");
-            String[] splitImageName = path.split(".");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 res.setStatus(HttpStatus.ACCEPTED.value());
@@ -219,7 +218,7 @@ public class UserController {
             }else{
                 user.setGender("female");
             }
-            UserImage userImage = socialImageStore.storeFile(user, splitImageName[0] + ".jpg", "NAVER");
+            UserImage userImage = socialImageStore.storeFile(user, path, "NAVER");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             res.setStatus(HttpStatus.ACCEPTED.value());
