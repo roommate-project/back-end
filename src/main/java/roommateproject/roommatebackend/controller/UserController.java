@@ -177,12 +177,13 @@ public class UserController {
         try {
             User user = (User) kakaoUser.get("user");
             String path = (String) kakaoUser.get("image");
+            String[] splitImageName = path.split(".");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 res.setStatus(HttpStatus.ACCEPTED.value());
                 return new ResponseMessage(HttpStatus.BAD_REQUEST.value(), false, "이미 회원가입함", new Date());
             }
-            UserImage userImage = socialImageStore.storeFile(user, path, "KAKAO");
+            UserImage userImage = socialImageStore.storeFile(user, splitImageName[0] + ".jpg", "KAKAO");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             res.setStatus(HttpStatus.ACCEPTED.value());
@@ -207,6 +208,7 @@ public class UserController {
         try {
             User user = (User) naverUser.get("user");
             String path = (String) naverUser.get("image");
+            String[] splitImageName = path.split(".");
             Optional<User> findUser = userService.findByEmail(user.getEmail());
             if(!findUser.isEmpty()){
                 res.setStatus(HttpStatus.ACCEPTED.value());
@@ -217,7 +219,7 @@ public class UserController {
             }else{
                 user.setGender("female");
             }
-            UserImage userImage = socialImageStore.storeFile(user, path, "NAVER");
+            UserImage userImage = socialImageStore.storeFile(user, splitImageName[0] + ".jpg", "NAVER");
             userService.join(user,userImage);
         } catch (NoSuchAlgorithmException e) {
             res.setStatus(HttpStatus.ACCEPTED.value());
