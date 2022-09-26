@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.file;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,20 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-@Component
+@Component @Slf4j
 public class RepresentImageStore {
 
     @Value("${spring.image.represent}")
     private String fileDir;
 
     public String getFullPath(String filename){
-        if(filename.contains(".jpg") || filename.contains(".bmp") || filename.contains(".JPG")
-            || filename.contains("jpeg") || filename.contains(".JPEG") || filename.contains(".BMP")
-            || filename.contains(".png") || filename.contains(".PNG") || filename.contains(".gif")
-            || filename.contains(".GIF")){
-            return fileDir + filename;
-        }
-        return fileDir + filename + ".jpg";
+        return fileDir + filename;
     }
 
     public UserImage storeFile(User user, MultipartFile multipartFile) throws IOException {

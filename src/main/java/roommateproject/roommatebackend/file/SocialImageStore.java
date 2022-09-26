@@ -22,8 +22,8 @@ public class SocialImageStore {
     private String fileDir;
 
     public String getFullPath(String filename){
-        String[] fileSplit = filename.split(".Kakao");
-        return fileDir + fileSplit[0] + ".jpg";
+    //    String[] fileSplit = filename.split(".Kakao");
+        return fileDir + filename;
     }
 
     public UserImage storeFile(User user, String downloadURL, String social) throws IOException {
@@ -44,7 +44,7 @@ public class SocialImageStore {
 
     private String createStoreFileName(String originalFileName, String uuid) {
         String ext = extractExt(originalFileName);
-        return uuid + "." + ext;
+        return uuid + ".jpg";
     }
 
     private String extractExt(String originalFileName) {
