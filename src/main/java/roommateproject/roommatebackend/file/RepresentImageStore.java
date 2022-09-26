@@ -17,7 +17,10 @@ public class RepresentImageStore {
     private String fileDir;
 
     public String getFullPath(String filename){
-        if(filename.contains(".jpg") || filename.contains(".bmp")){
+        if(filename.contains(".jpg") || filename.contains(".bmp") || filename.contains(".JPG")
+            || filename.contains("jpeg") || filename.contains(".JPEG") || filename.contains(".BMP")
+            || filename.contains(".png") || filename.contains(".PNG") || filename.contains(".gif")
+            || filename.contains(".GIF")){
             return fileDir + filename;
         }
         return fileDir + filename + ".jpg";
