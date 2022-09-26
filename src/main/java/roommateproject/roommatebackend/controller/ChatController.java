@@ -1,28 +1,38 @@
 package roommateproject.roommatebackend.controller;
 
-import org.springframework.web.bind.annotation.*;
-import roommateproject.roommatebackend.entity.ChatRoom;
+import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import roommateproject.roommatebackend.dto.ChatDto;
 import roommateproject.roommatebackend.service.ChatService;
 
-import java.util.List;
-
-@RestController
+@RequiredArgsConstructor
+@Controller
 @CrossOrigin
 public class ChatController {
 
+    private final SimpMessageSendingOperations messagingTemplate;
     private final ChatService chatService;
 
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
+    @MessageMapping("/chat/message")
+    public void message(ChatDto message) {
+//        if (MessageType.ENTER.equals(message.getType()))
+//            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+
+        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+        // 메시지 db에 저장
+        chatService.saveMessage(message);
     }
 
-    @PostMapping("/api/chat")
-    public ChatRoom createRoom(@RequestBody String name) {
-        return chatService.createRoom(name);
-    }
-
-    @GetMapping("/api/chat")
-    public List<ChatRoom> findAllRoom() {
-        return chatService.findAllRoom();
+    @PostMapping("/api/chat/message")
+    @ResponseBody
+    public void messageTeset(@RequestBody ChatDto message) {
+        System.out.println("message = " + message.toString());
+        chatService.saveMessage(message);
     }
 }
