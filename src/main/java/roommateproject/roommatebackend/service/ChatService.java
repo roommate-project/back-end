@@ -35,6 +35,7 @@ public class ChatService {
         User user = userRepository.find(user_id);
         List<ChatRoom> chatRooms = participantRepository.findAllChatRoom(user);
         List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
+
         for (ChatRoom room : chatRooms) {
             Chat chat = chatRepository.findLastMessage(room);
             ChatRoomDto chatRoomDto =
@@ -62,6 +63,17 @@ public class ChatService {
     public ChatRoom createRoom(Map<String, Long> request) {
         User sender = userRepository.find(request.get("sender"));
         User receiver = userRepository.find(request.get("receiver"));
+        List<ChatRoom> senderRoomList = participantRepository.findAllChatRoom(sender);
+        List<ChatRoom> receiverRoomList = participantRepository.findAllChatRoom(receiver);
+
+        // sender와 receiver의 방이 이미 있으면 그 방을 리턴
+        for (ChatRoom room: senderRoomList) {
+            if (receiverRoomList.contains(room)) {
+                return room;
+            }
+        }
+
+        // sender와 receiver의 방이 없으면 새로 생성해서 리턴
         ChatRoom chatRoom = new ChatRoom();
         chatRoomRepository.store(chatRoom);
         participantRepository.store(new Participant(sender, chatRoom));
@@ -73,6 +85,7 @@ public class ChatService {
     @Transactional
     public void saveMessage(ChatDto message) {
         ChatRoom chatRoom = chatRoomRepository.findRoom(message.getRoomId());
+        // 채팅에 이미지가 오면 saveImage(message.getMessage())
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
                 .message(message.getMessage())
@@ -81,6 +94,11 @@ public class ChatService {
                 .sender(message.getSender())
                 .build();
         chatRepository.store(chat);
+    }
+
+    @Transactional
+    public void saveImage(String url) {
+
     }
 
 }
