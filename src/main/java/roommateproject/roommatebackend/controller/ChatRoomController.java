@@ -25,10 +25,10 @@ public class ChatRoomController {
     private final ChatService chatService;
 
     // 모든 채팅방 목록 반환
-    @GetMapping("/rooms")
+    @GetMapping("/rooms/{userId}")
     @ResponseBody
-    public List<ChatRoomDto> room(@RequestBody Map<String, Long> request) {
-        return chatService.findAllRoomById(request.get("user_id"));
+    public List<ChatRoomDto> room(@PathVariable Long userId) {
+        return chatService.findAllRoomById(userId);
     }
 
     // 채팅방 생성
