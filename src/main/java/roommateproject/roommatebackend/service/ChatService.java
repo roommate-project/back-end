@@ -42,7 +42,7 @@ public class ChatService {
                     ChatRoomDto.builder()
                             .roomId(room.getRoomId())
                             .sender(participantRepository.findReceiver(user, room)
-                                    .getName())
+                                    .getNickName())
                             .lastMessage(chat.getMessage())
                             .sendTime(chat.getSendTime())
                             .representImageId(
