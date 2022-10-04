@@ -39,7 +39,7 @@ public class ChatService {
     private final HomeRepository homeRepository;
 
     public UserInfo getUserInfo(User user) {
-        return new UserInfo(user.getName(), user.getId(), user.getAge(),
+        return new UserInfo(user.getNickName(), user.getId(), user.getAge(),
                 homeRepository.getLocation(user));
     }
 
