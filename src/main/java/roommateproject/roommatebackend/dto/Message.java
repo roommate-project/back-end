@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.dto;
 
+import java.sql.Blob;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,14 +8,15 @@ import lombok.Setter;
 @Setter
 public class ChatDto {
 
-//    // 메시지 타입 : 입장, 채팅
-//    public enum MessageType {
-//        ENTER, TALK
-//    }
-//
-//    private MessageType type; // 메시지 타입
+    // 메시지 타입 : 입장, 채팅
+    public enum MessageType {
+        CHAT, IMAGE
+    }
+
+    private MessageType type; // 메시지 타입
     private Long roomId; // 방번호
     private String sender; // 메시지 보낸사람
     private String message; // 메시지
+    private Blob image; // 이미지
 
 }
