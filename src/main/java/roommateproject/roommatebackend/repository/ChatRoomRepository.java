@@ -17,12 +17,15 @@ public class ChatRoomRepository {
     }
 
     public ChatRoom findRoom(Long roomId) {
-        System.out.println("roomId = " + roomId);
         return em.find(ChatRoom.class, roomId);
     }
 
     public void store(ChatRoom chatRoom) {
         em.persist(chatRoom);
+    }
+
+    public void remove(ChatRoom chatRoom) {
+        em.remove(chatRoom);
     }
 
 }

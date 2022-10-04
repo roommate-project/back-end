@@ -24,6 +24,9 @@ public class ChatRepository {
         TypedQuery<Chat> query  = em.createQuery("select c from Chat c where c.chatRoom = :room order by c.sendTime desc",Chat.class);
         query.setParameter("room",room);
         List<Chat> chatList = query.getResultList();
+        if (chatList.isEmpty()) {
+            return null;
+        }
         return chatList.get(0);
     }
 

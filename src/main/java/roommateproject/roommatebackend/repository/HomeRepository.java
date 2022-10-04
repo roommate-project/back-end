@@ -107,4 +107,10 @@ public class HomeRepository {
         findHome.setDormitory(dormitory);
         em.merge(findHome);
     }
+
+    public String getLocation(User user) {
+        Home home =  em.createQuery("select h from Home h where h.user=:user",Home.class)
+                .setParameter("user",user).getSingleResult();
+        return home.getLocation();
+    }
 }

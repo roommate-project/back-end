@@ -4,16 +4,21 @@ import java.util.Date;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
+import roommateproject.roommatebackend.entity.User;
 
 @Getter
 @Setter
-@Builder
 public class ChatRoomDto {
 
     private Long roomId;
-    private String sender; //TODO: 상대방 이름? 상대방 아이디?
+    private UserInfo userInfo;
+    @Nullable
     private String lastMessage;
+    @Nullable
     private Date sendTime;
-    private Long representImageId;
+
+    public ChatRoomDto() {
+    }
 
 }
