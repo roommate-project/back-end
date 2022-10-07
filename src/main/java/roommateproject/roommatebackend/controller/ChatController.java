@@ -29,7 +29,6 @@ public class ChatController {
         } else if (MessageType.IMAGE.equals(message.getType())) { // 이미지 메시지
             chatService.saveImageMessage(message);
         }
-        chatService.saveTextMessage(message);
     }
 
     @PostMapping("/api/chat/message")
