@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.repository;
 
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import roommateproject.roommatebackend.dto.UserHomeDto;
 import roommateproject.roommatebackend.entity.Home;
@@ -15,9 +16,9 @@ public class HomeRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Home find(User user){
+    public Optional<Home> find(User user){
         return em.createQuery("select h from Home h where h.user=:user",Home.class)
-                .setParameter("user",user).getSingleResult();
+                .setParameter("user",user).getResultList().stream().findFirst();
     }
 
     public Long save(Home home) {

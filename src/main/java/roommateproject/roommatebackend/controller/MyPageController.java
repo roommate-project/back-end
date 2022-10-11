@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.controller;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -129,8 +130,8 @@ public class MyPageController {
     public ResponseMessage saveUserHomeInfo(@Login User loginUser,
             @RequestBody UserHomeDto request) {
 
-        Home home = homeService.find(loginUser);
-        if (home == null) {
+        Optional<Home> home = homeService.find(loginUser);
+        if (home.isEmpty()) {
             homeService.save(new Home(loginUser, request));
         } else {
             return new ResponseMessage(HttpStatus.CONFLICT.value(), true, "주거 정보가 이미 저장되어 있습니다.",
