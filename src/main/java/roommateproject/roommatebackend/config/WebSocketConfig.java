@@ -13,6 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Configure message broker.
+     *
      * @param config
      */
     @Override
@@ -23,6 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Register stomp endpoints.
+     *
      * @param registry
      */
     @Override
@@ -33,10 +35,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Configure web socket transport.
+     *
      * @param registration
      */
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setSendTimeLimit(20 * 10000);
+        registration.setSendTimeLimit(100 * 10000).setSendBufferSizeLimit(3 * 512 * 1024)
+                .setMessageSizeLimit(160 * 64 * 1024);
     }
 }
