@@ -21,7 +21,7 @@ public class Chat {
 
     private Long senderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id")
     @JsonIgnore
     private ChatRoom chatRoom;

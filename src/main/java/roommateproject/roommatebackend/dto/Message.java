@@ -16,6 +16,6 @@ public class Message {
     private Long roomId; // 방번호
     private Long senderId; // 메시지 보낸 사람 id
     private String message; // 메시지
-    private byte[] image; // 이미지
+    private String image; // 이미지
 
 }

@@ -2,6 +2,7 @@ package roommateproject.roommatebackend.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -117,8 +118,9 @@ public class ChatService {
             if (chat.getIsImage()) {
                 chatDto.setIsImage(true);
                 try {
-                    chatDto.setImage(chat.getImage()
-                            .getBytes(1, (int) chat.getImage().length())); // Blob 이미지를 byte 배열로 변환
+                    chatDto.setImage(Base64.getEncoder().encodeToString(
+                            chat.getImage().getBytes(1, (int) chat.getImage().length())
+                    )); // Blob 이미지 -> byte 배열 -> Base64 인코딩
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -164,7 +166,9 @@ public class ChatService {
                     .sendTime(new Date())
                     .senderId(message.getSenderId())
                     .isImage(true)
-                    .image(new SerialBlob(message.getImage()))
+                    .image(new SerialBlob( Base64.getDecoder().decode(
+                            message.getImage())
+                    )) // Base64 인코딩 -> byte 배열 -> Blob 이미지
                     .build();
             chatRepository.store(chat);
 

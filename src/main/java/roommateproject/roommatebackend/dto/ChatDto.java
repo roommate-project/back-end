@@ -12,6 +12,6 @@ public class ChatDto {
     private Boolean isMe;
     private Date sendTime;
     private Boolean isImage;
-    private byte[] image;
+    private String image;
 
 }
