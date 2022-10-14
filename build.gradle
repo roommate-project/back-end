@@ -39,6 +39,8 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
 }
 
 tasks.named('test') {
@@ -48,3 +50,4 @@ tasks.named('test') {
 jar {
 	enabled = false
 }
+

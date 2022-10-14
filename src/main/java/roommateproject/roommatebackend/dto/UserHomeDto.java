@@ -1,6 +1,7 @@
 package roommateproject.roommatebackend.dto;
 
 import lombok.Data;
+import org.springframework.lang.Nullable;
 import roommateproject.roommatebackend.entity.Home;
 import roommateproject.roommatebackend.entity.UserImage;
 
@@ -17,9 +18,12 @@ public class UserHomeDto {
     private Integer cost;
     private String info;
     private String houseInfo;
+    @Nullable
     private String location;
+    @Nullable
     private String dormitory;
 
+    @Nullable
     private List<Boolean> question;
     private List<Long> restImagesId;
  //   private Boolean question1;

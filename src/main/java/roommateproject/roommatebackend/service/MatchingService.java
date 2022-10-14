@@ -33,7 +33,7 @@ public class MatchingService {
         all.forEach((u) -> {
             Optional<LikeIt> like = likeRepository.checkLike(user, u);
             Boolean checkLike = like.isPresent();
-            MatchingDto matchingDto = new MatchingDto(u.getNickName(),homeRepository.find(u).getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId(),checkLike);
+            MatchingDto matchingDto = new MatchingDto(u.getNickName(),homeRepository.find(u).get().getInfo(),u.getHome().getLocation(),u.getGender(),u.getAge(),u.getHome().getId(),u,imageRepository.getRepresentImage(u).getId(),checkLike);
             matchingDto.setLikeNumber(likeRepository.getReceiverCount(matchingDto.getUser()));
             matchingDto.setQuestionCount(homeRepository.getQuestionCount(matchingDto.getHomeId(),user));
             allMatch.add(matchingDto);

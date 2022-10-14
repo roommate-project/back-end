@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.controller;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,9 @@ public class MyPageController {
     private final RepresentImageStore representImageStore;
     private final LikeService likeService;
 
-    public MyPageController(UserService userService, HomeService homeService, ImageRepository imageRepository, RestImageStore restImageStore, RepresentImageStore representImageStore, LikeService likeService) {
+    public MyPageController(UserService userService, HomeService homeService,
+            ImageRepository imageRepository, RestImageStore restImageStore,
+            RepresentImageStore representImageStore, LikeService likeService) {
         this.userService = userService;
         this.homeService = homeService;
         this.imageRepository = imageRepository;
@@ -58,30 +61,32 @@ public class MyPageController {
 
     @GetMapping("/api/mypage/{pageNumber}")
     public MypageDto userInfo(@Login User loginUser,
-                              @PathVariable("pageNumber") int pageNumber){
+            @PathVariable("pageNumber") int pageNumber) {
         UserImage userImage = imageRepository.getRepresentImage(loginUser);
         List<UserImage> restImages = imageRepository.getRestImage(loginUser);
-        UserDto info =  new UserDto(loginUser,userImage);
-  //      info.setRepresentImage(representDir + info.getRepresentImage());
-        return new MypageDto(info, new UserHomeDto(loginUser.getHome(), restImages), likeService.getLikeList(loginUser, pageNumber));
+        UserDto info = new UserDto(loginUser, userImage);
+        //      info.setRepresentImage(representDir + info.getRepresentImage());
+        return new MypageDto(info, new UserHomeDto(loginUser.getHome(), restImages),
+                likeService.getLikeList(loginUser, pageNumber));
     }
-/*
-    @GetMapping("/api/mypage/info")
-    public UserHomeDto getUserMatchInfo(@Login User loginUser){
 
-        return new UserHomeDto(loginUser.getHome());
-    }
-    @GetMapping("/api/mypage/like/{pageNumber}")
-    public List<LikeReturnDto> getLikeList(@Login User loginUser,
-                                           @PathVariable("pageNumber") int pageNumber){
+    /*
+        @GetMapping("/api/mypage/info")
+        public UserHomeDto getUserMatchInfo(@Login User loginUser){
 
-        return likeService.getLikeList(loginUser, pageNumber);
-    }
- */
+            return new UserHomeDto(loginUser.getHome());
+        }
+        @GetMapping("/api/mypage/like/{pageNumber}")
+        public List<LikeReturnDto> getLikeList(@Login User loginUser,
+                                               @PathVariable("pageNumber") int pageNumber){
+
+            return likeService.getLikeList(loginUser, pageNumber);
+        }
+     */
     @PutMapping("/api/mypage")
     public ResponseMessage editUserInfo(@Login User loginUser,
-                                        HttpServletResponse res,
-                                        @RequestBody Map<String, Object> request){
+            HttpServletResponse res,
+            @RequestBody Map<String, Object> request) {
    /*
         User user = null;
         try{
@@ -107,52 +112,61 @@ public class MyPageController {
  */
 
     @GetMapping("/api/mypage/drop")
-    public ResponseMessage eraseUser(@Login User loginUser){
+    public ResponseMessage eraseUser(@Login User loginUser) {
         userService.erase(loginUser);
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원탈퇴 완료", new Date());
     }
 
     @GetMapping("/api/mypage/home")
-    public HomeDto getHomeInfo(@Login User loginUser){
+    public HomeDto getHomeInfo(@Login User loginUser) {
         List<Long> images = imageRepository.getRestImage(loginUser)
                 .stream().map(i -> i.getId())
                 .collect(Collectors.toList());
-        return new HomeDto(loginUser.getHome(),images);
+        return new HomeDto(loginUser.getHome(), images);
     }
 
 
     @PostMapping("/api/mypage/info")
     public ResponseMessage saveUserHomeInfo(@Login User loginUser,
-                                            @RequestBody UserHomeDto request){
+            @RequestBody UserHomeDto request) {
 
-        Home home = new Home(loginUser, request);
-        homeService.save(home);
+        Optional<Home> home = homeService.find(loginUser);
+        if (home.isEmpty()) {
+            homeService.save(new Home(loginUser, request));
+        } else {
+            return new ResponseMessage(HttpStatus.CONFLICT.value(), true, "주거 정보가 이미 저장되어 있습니다.",
+                    new Date());
+        }
+
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거 정보 저장 완료", new Date());
     }
 
     @PostMapping("/api/mypage/question")
     public ResponseMessage saveQuestions(@Login User loginUser,
-                                         @RequestBody Map<String, List<Boolean>> questions){
+            @RequestBody Map<String, List<Boolean>> questions) {
         List<Boolean> question = questions.get("question");
-        if(question.size() != 6){
-            return new ResponseMessage(HttpStatus.NO_CONTENT.value(), false, "주거성향테스트 개수 오류", new Date());
+        if (question.size() != 6) {
+            return new ResponseMessage(HttpStatus.NO_CONTENT.value(), false, "주거성향테스트 개수 오류",
+                    new Date());
         }
         homeService.saveQuestions(loginUser, question);
         return new ResponseMessage(HttpStatus.OK.value(), true, "주거성향테스트 저장 완료", new Date());
     }
 
-    @PostMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/api/mypage/image/rest", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage addRestImage(@Login User loginUser,
-                                        @RequestPart @NotBlank MultipartFile restImages) throws IOException {
+            @RequestPart @NotBlank MultipartFile restImages) throws IOException {
 
 //        restImageStore.storeFiles(loginUser,restImages).forEach(i -> imageRepository.save(i));
         imageRepository.save(restImageStore.storeFile(loginUser, restImages));
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 사진 저장 완료", new Date());
     }
 
-    @PutMapping(value = "/api/mypage/image/represent",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/api/mypage/image/represent", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRepresentImage(@Login User loginUser,
-                                        @RequestPart @NotBlank MultipartFile representImage) throws IOException {
+            @RequestPart @NotBlank MultipartFile representImage) throws IOException {
 
         UserImage userImage = representImageStore.storeFile(loginUser, representImage);
         imageRepository.change(loginUser, userImage);
@@ -160,16 +174,17 @@ public class MyPageController {
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 대표 사진 수정 완료", new Date());
     }
 
-    @PutMapping(value = "/api/mypage/image/rest",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/api/mypage/image/rest", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage editRestImage(@Login User loginUser,
-                                        @RequestPart @NotBlank ImageEditDto imageEditDto,
-                                        @RequestPart @Nullable List<MultipartFile> restImages) throws IOException {
+            @RequestPart @NotBlank ImageEditDto imageEditDto,
+            @RequestPart @Nullable List<MultipartFile> restImages) throws IOException {
 
-   //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
-        for(Long id : imageEditDto.getImageId()) {
+        //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
+        for (Long id : imageEditDto.getImageId()) {
             imageRepository.remove(id);
         }
-        if(restImages != null) {
+        if (restImages != null) {
             for (MultipartFile restImage : restImages) {
                 UserImage userImage = restImageStore.storeFile(loginUser, restImage);
                 imageRepository.save(userImage);
@@ -181,7 +196,7 @@ public class MyPageController {
     @DeleteMapping("/api/mypage/image/rest/{id}")
     public ResponseMessage removeRestImage(@PathVariable("id") Long id) {
 
-   //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
+        //     List<UserImage> imageList = imageRepository.getRestImage(loginUser);
         imageRepository.remove(id);
         return new ResponseMessage(HttpStatus.OK.value(), true, "회원 나머지 사진 삭제 완료", new Date());
     }

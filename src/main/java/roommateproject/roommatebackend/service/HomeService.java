@@ -1,5 +1,6 @@
 package roommateproject.roommatebackend.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roommateproject.roommatebackend.entity.Home;
@@ -83,7 +84,7 @@ public class HomeService {
         }
     }
 
-    public Home find(User user) {
+    public Optional<Home> find(User user) {
         return homeRepository.find(user);
     }
 

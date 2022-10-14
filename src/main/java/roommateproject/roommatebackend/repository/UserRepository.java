@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import roommateproject.roommatebackend.entity.User;
 import roommateproject.roommatebackend.entity.UserImage;
+import roommateproject.roommatebackend.entity.UserToken;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,8 +40,19 @@ public class UserRepository {
                 .stream().findAny();
     }
 
+    public Optional<UserToken> findTokenByUser(User user){
+        return em.createQuery("select ut from UserToken ut where ut.userId=:id",UserToken.class)
+                .setParameter("id",user.getId())
+                .getResultList().stream().findAny();
+    }
+
     public long erase(User user) {
+        Optional<UserToken> ut = findTokenByUser(user);
+        if(ut.isPresent()){
+            em.remove(ut.get());
+        }
         em.remove(user);
+        em.flush();
         return user.getId();
     }
 

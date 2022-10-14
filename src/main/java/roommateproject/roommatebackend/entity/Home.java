@@ -44,14 +44,15 @@ public class Home {
         this.cost = userHomeDto.getCost();
         this.info = userHomeDto.getInfo();
         this.houseInfo = userHomeDto.getHouseInfo();
-        this.dormitory = userHomeDto.getDormitory();
-        this.location = userHomeDto.getLocation();
-        this.question1 = userHomeDto.getQuestion().get(0);
-        this.question2 = userHomeDto.getQuestion().get(1);
-        this.question3 = userHomeDto.getQuestion().get(2);
-        this.question4 = userHomeDto.getQuestion().get(3);
-        this.question5 = userHomeDto.getQuestion().get(4);
-        this.question6 = userHomeDto.getQuestion().get(5);
+        // 아래는 회원가입에서 등록
+//        this.dormitory = userHomeDto.getDormitory();
+//        this.location = userHomeDto.getLocation();
+//        this.question1 = userHomeDto.getQuestion().get(0);
+//        this.question2 = userHomeDto.getQuestion().get(1);
+//        this.question3 = userHomeDto.getQuestion().get(2);
+//        this.question4 = userHomeDto.getQuestion().get(3);
+//        this.question5 = userHomeDto.getQuestion().get(4);
+//        this.question6 = userHomeDto.getQuestion().get(5);
  /*       this.question1 = userHomeDto.getQuestion1();
         this.question2 = userHomeDto.getQuestion2();
         this.question3 = userHomeDto.getQuestion3();

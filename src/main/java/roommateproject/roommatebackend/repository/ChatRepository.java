@@ -1,27 +1,33 @@
 package roommateproject.roommatebackend.repository;
 
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.socket.WebSocketSession;
 import roommateproject.roommatebackend.entity.Chat;
-import roommateproject.roommatebackend.entity.ChatRoom;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import roommateproject.roommatebackend.entity.ChatRoom;
 
 @Repository
 public class ChatRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public List<ChatRoom> findAllChatRoom(){
-        return em.createQuery("select cr from ChatRoom cr",ChatRoom.class).getResultList();
+    public List<Chat> findChatListById(ChatRoom room){
+        TypedQuery<Chat> query  = em.createQuery("select c from Chat c where c.chatRoom = :room ",Chat.class);
+        query.setParameter("room",room);
+        return query.getResultList();
     }
 
-    public ChatRoom findRoom(Long roomId) {
-        return em.find(ChatRoom.class, roomId);
+    public Chat findLastMessage(ChatRoom room){
+        TypedQuery<Chat> query  = em.createQuery("select c from Chat c where c.chatRoom = :room order by c.sendTime desc",Chat.class);
+        query.setParameter("room",room);
+        List<Chat> chatList = query.getResultList();
+        if (chatList.isEmpty()) {
+            return null;
+        }
+        return chatList.get(0);
     }
 
     public void store(Chat chat) {
