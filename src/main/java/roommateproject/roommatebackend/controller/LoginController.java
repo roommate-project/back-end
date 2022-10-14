@@ -59,9 +59,12 @@ public class LoginController {
             String token = tokenProvider.createToken(user.getId());
             String[] splitToken = token.split(" ");
             Optional<UserToken> userToken = userTokenRepository.find(user);
+            UserToken saveToken = null;
 
             if(userToken.isEmpty()){
-                userTokenRepository.save(new UserToken(user.getId(), splitToken[0], splitToken[1]));
+                saveToken = new UserToken(user.getId(), splitToken[0], splitToken[1]);
+                userTokenRepository.save(saveToken);
+                return new ResponseMessage(saveToken.getAccessToken() + " " + saveToken.getRefreshToken(), user.getId());
             }else{
                 userTokenRepository.update(user.getId(), splitToken);
             }
