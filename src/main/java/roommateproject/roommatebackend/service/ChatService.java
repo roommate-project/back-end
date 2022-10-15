@@ -47,22 +47,28 @@ public class ChatService {
     /**
      * 채팅방 리스트 조회
      */
+    @Transactional
     public List<ChatRoomDto> findAllRoomById(Long userId) {
         User sender = userRepository.find(userId);
         List<ChatRoom> chatRooms = participantRepository.findAllChatRoom(sender);
         List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
 
         for (ChatRoom room : chatRooms) {
-            User receiver = participantRepository.findReceiver(sender, room);
-
             ChatRoomDto chatRoomDto = new ChatRoomDto();
-            chatRoomDto.setRoomId(room.getRoomId());
-            chatRoomDto.setUserInfo(getUserInfo(receiver));
+
             Chat chat = chatRepository.findLastMessage(room);
-            if (chat != null) {
+            if (chat == null) {
+                chatRoomRepository.remove(room);
+                continue;
+            }
+            else {
                 chatRoomDto.setLastMessage(chat.getMessage());
                 chatRoomDto.setSendTime(chat.getSendTime());
             }
+            chatRoomDto.setRoomId(room.getRoomId());
+            User receiver = participantRepository.findReceiver(sender, room);
+            chatRoomDto.setUserInfo(getUserInfo(receiver));
+
             chatRoomDtoList.add(chatRoomDto);
         }
         return chatRoomDtoList;
@@ -181,7 +187,6 @@ public class ChatService {
     @Transactional
     public void deleteRoom(Long roomId) {
         ChatRoom room = chatRoomRepository.findRoom(roomId);
-        participantRepository.remove(room);
         chatRoomRepository.remove(room);
     }
 

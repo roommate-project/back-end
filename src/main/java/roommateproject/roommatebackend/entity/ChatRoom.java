@@ -26,4 +26,11 @@ public class ChatRoom {
     @JsonIgnore
     List<Chat> chatList;
 
+    @OneToMany(
+            mappedBy = "room",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JsonIgnore
+    List<Participant> participants;
+
 }

@@ -11,19 +11,23 @@ import roommateproject.roommatebackend.entity.ChatRoom;
 
 @Repository
 public class ChatRepository {
+
     @PersistenceContext
     private EntityManager em;
 
-    public List<Chat> findChatListById(ChatRoom room){
-        TypedQuery<Chat> query  = em.createQuery("select c from Chat c where c.chatRoom = :room ",Chat.class);
-        query.setParameter("room",room);
-        return query.getResultList();
+    public List<Chat> findChatListById(ChatRoom room) {
+        return em.createQuery(
+                        "select c from Chat c where c.chatRoom = :room order by c.sendTime desc",
+                        Chat.class)
+                .setParameter("room", room).getResultList();
     }
 
-    public Chat findLastMessage(ChatRoom room){
-        TypedQuery<Chat> query  = em.createQuery("select c from Chat c where c.chatRoom = :room order by c.sendTime desc",Chat.class);
-        query.setParameter("room",room);
-        List<Chat> chatList = query.getResultList();
+    public Chat findLastMessage(ChatRoom room) {
+        List<Chat> chatList = em.createQuery(
+                "select c from Chat c where c.chatRoom = :room order by c.sendTime desc",
+                Chat.class)
+                .setParameter("room", room)
+                .getResultList();
         if (chatList.isEmpty()) {
             return null;
         }
