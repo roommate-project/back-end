@@ -17,7 +17,7 @@ public class ChatRepository {
 
     public List<Chat> findChatListById(ChatRoom room) {
         return em.createQuery(
-                        "select c from Chat c where c.chatRoom = :room order by c.sendTime desc",
+                        "select c from Chat c where c.chatRoom = :room",
                         Chat.class)
                 .setParameter("room", room).getResultList();
     }
