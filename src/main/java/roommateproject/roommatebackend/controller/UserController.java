@@ -85,14 +85,17 @@ public class UserController {
     @GetMapping("/api/user/validate")
     public ResponseMessage checkEmail(@RequestParam(value = "email") @Email String requestEmail,
                                       HttpServletResponse res){
-        String randomNumber = mailSender.sendEmail(requestEmail);
-        if(randomNumber.equals("fail")){
-            res.setStatus(HttpStatus.ACCEPTED.value());
-            return new ResponseMessage(new EmailValidateDto(false,"이메일 보내기 불가",HttpStatus.BAD_REQUEST));
-        }
+        String randomNumber = String.valueOf(new Random().nextInt(2000000000) % 1000000);
+
+//        String randomNumber = mailSender.sendEmail(requestEmail);
+//        if(randomNumber.equals("fail")){
+//            res.setStatus(HttpStatus.ACCEPTED.value());
+//            return new ResponseMessage(new EmailValidateDto(false,"이메일 보내기 불가",HttpStatus.BAD_REQUEST));
+//        }
         emailCheck.put(requestEmail,randomNumber);
         checkTime.put(requestEmail,new Date());
-        return new ResponseMessage(new EmailValidateDto(true,"이메일 보내기 성공",HttpStatus.OK));
+//        return new ResponseMessage(new EmailValidateDto(true,"이메일 보내기 성공",HttpStatus.OK));
+        return new ResponseMessage(new EmailValidateDto(true,randomNumber,HttpStatus.OK));
     }
 
     @PostMapping("/api/user/validate")
