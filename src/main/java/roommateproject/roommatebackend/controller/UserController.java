@@ -85,17 +85,15 @@ public class UserController {
     @GetMapping("/api/user/validate")
     public ResponseMessage checkEmail(@RequestParam(value = "email") @Email String requestEmail,
                                       HttpServletResponse res){
-        String randomNumber = String.valueOf(new Random().nextInt(2000000000) % 1000000);
 
-//        String randomNumber = mailSender.sendEmail(requestEmail);
-//        if(randomNumber.equals("fail")){
-//            res.setStatus(HttpStatus.ACCEPTED.value());
-//            return new ResponseMessage(new EmailValidateDto(false,"이메일 보내기 불가",HttpStatus.BAD_REQUEST));
-//        }
+        String randomNumber = mailSender.sendEmail(requestEmail);
+        if(randomNumber.equals("fail")){
+            res.setStatus(HttpStatus.ACCEPTED.value());
+            return new ResponseMessage(new EmailValidateDto(false,"이메일 보내기 불가",HttpStatus.BAD_REQUEST));
+        }
         emailCheck.put(requestEmail,randomNumber);
         checkTime.put(requestEmail,new Date());
-//        return new ResponseMessage(new EmailValidateDto(true,"이메일 보내기 성공",HttpStatus.OK));
-        return new ResponseMessage(new EmailValidateDto(true,randomNumber,HttpStatus.OK));
+        return new ResponseMessage(new EmailValidateDto(true,"이메일 보내기 성공",HttpStatus.OK));
     }
 
     @PostMapping("/api/user/validate")
@@ -130,11 +128,11 @@ public class UserController {
                                    @RequestPart(value = "userAddForm") @Valid UserAddForm userAddForm,
                                    @RequestPart MultipartFile representFile,
                                    @RequestPart @Nullable List<MultipartFile> restFiles) throws IOException {
-
+/*
         if(emailCodeComplete.get(requestEmail) == null){
             return new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), false, "이메일 검정 먼저 하세요",new Date());
         }
-
+*/
          //이메일 검정 안해도 되도록 해 놓음 -> 나중엔 주석 해제할것
         if(userAddForm.getPassword().length() < 8 || userAddForm.getPassword().length() > 20){
             res.setStatus(HttpStatus.ACCEPTED.value());

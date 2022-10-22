@@ -123,7 +123,7 @@ public class MatchingController {
         List<Long> allImages = new ArrayList<>();
         allImages.add(representImage.getId());
         restImages.forEach(i -> allImages.add(i.getId()));
-        DetailHouseInfo detailHouseInfo = new DetailHouseInfo(loginUser.getHome().getRoom(), loginUser.getHome().getCost(), loginUser.getHome().getHouseInfo(), allImages);
+        DetailHouseInfo detailHouseInfo = new DetailHouseInfo(findUser.getHome().getRoom(), findUser.getHome().getCost(), findUser.getHome().getHouseInfo(), allImages);
 
         return new DetailReturnInfoDto(detailUserInfo,findUser,detailHouseInfo,loginUser);
     }
