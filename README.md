@@ -1,7 +1,7 @@
 <br />
 <br />
 <p align="center">
-  <img src="src/assets/roommate.svg" height="48">
+  <img src="https://github.com/roommate-project/front-end/blob/main/src/assets/roommate.svg" height="48">
 </p>
 <br />
 <br />
