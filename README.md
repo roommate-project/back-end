@@ -91,6 +91,38 @@
           <td>선택한 이유</td>
       </tr>
       <tr>
+          <td>
+              Spring boot
+          </td>
+          <td>
+              모든 팀원이 사용 가능함
+          </td>
+      </tr>
+      <tr>
+          <td>
+              OAuth 2.0
+          </td>
+          <td>
+              소셜로그인에 필요함
+          </td>
+      </tr>
+      <tr>
+          <td>
+              MYSQL
+          </td>
+          <td>
+              사용해 보았던 RDBMS이기에 선택
+          </td>
+      </tr>
+      <tr>
+          <td>
+              JPA
+          </td>
+          <td>
+              직관적이고 비즈니스 로직에 더 집중 가능함
+          </td>
+      </tr>
+      <tr>
           <td><img src="https://img.shields.io/badge/Web Socket and Stomp-white?&logoColor=61DAFB"/></td>
           <td>
           - 채팅 구현을 위함<br />
