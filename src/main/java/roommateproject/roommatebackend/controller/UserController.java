@@ -128,12 +128,11 @@ public class UserController {
                                    @RequestPart(value = "userAddForm") @Valid UserAddForm userAddForm,
                                    @RequestPart MultipartFile representFile,
                                    @RequestPart @Nullable List<MultipartFile> restFiles) throws IOException {
-/*
+
         if(emailCodeComplete.get(requestEmail) == null){
             return new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), false, "이메일 검정 먼저 하세요",new Date());
         }
-*/
-         //이메일 검정 안해도 되도록 해 놓음 -> 나중엔 주석 해제할것
+
         if(userAddForm.getPassword().length() < 8 || userAddForm.getPassword().length() > 20){
             res.setStatus(HttpStatus.ACCEPTED.value());
             return new ResponseMessage(HttpStatus.BAD_REQUEST.value(),false,"비밀번호는 8자 이상 20자 이하",new Date());
